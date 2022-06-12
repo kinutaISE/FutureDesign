@@ -69,7 +69,9 @@ $cost_items = get_cost_items($pdo) ;
     扶養人数：
     <select name="dependents_num">
       <?php for ($i = 0 ; $i <= 10 ; $i++) :?>
-        <option value="<?= $i ;?>"><?= $i ;?>人</option>
+        <option value="<?= $i ;?>" <?= ($user->dependents_num === $i) ? 'selected' : '' ?>>
+          <?= $i ;?>人
+        </option>
       <?php endfor ;?>
     </select>
 
@@ -77,13 +79,13 @@ $cost_items = get_cost_items($pdo) ;
     <h2>収入に関する情報</h2>
     昨年度の年収価格帯：
     <br>
-    <?php for ($i = 1 ; $i <= 7 ; $i++) :?>
-      <label>
-        <input type="radio" name="anual_income_type" value="range_<?= $i ;?>">
-        <?= $anual_income_type_names[$i - 1] ;?>
-        <br>
-      </label>
-    <?php endfor ;?>
+    <select name="anual_income_type">
+      <?php for ($i = 1 ; $i <= 7 ; $i++) :?>
+        <option value="range_<?= $i ;?>" <?= ($user->anual_income_type === ("range_" . $i)) ? 'selected' : '' ?>>
+          <?= $anual_income_type_names[$i - 1] ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
     <br>
     給与（額面）：<input type="number" name="income" value="<?= $user->income ;?>" placeholder="額面の給与を記入してください">円
     <br>
