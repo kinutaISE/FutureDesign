@@ -3,19 +3,12 @@
 require_once('../app/config.php') ;
 
 $pdo = Database::getInstance() ;
-
-$user_id = filter_input(INPUT_POST, 'user_id') ;
+$user = find_user_id($pdo) ;
 $password = filter_input(INPUT_POST, 'password') ;
-$stmt = $pdo->prepare("
-  SELECT * FROM users WHERE id = :user_id
-") ;
-$stmt->bindValue('user_id', $user_id) ;
-$stmt->execute() ;
-$user = $stmt->fetch() ;
 ?>
 
 <?php
-if ( isset($user) && $user->password === $password ) :?>
+if ( ($user !== false) && ($user->password === $password) ) :?>
   <?php
     $_SESSION['user_id'] = $user->id ;
     header('Location: ' . SITE_URL . '/../mypage.php') ;

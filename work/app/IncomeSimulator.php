@@ -1,6 +1,5 @@
 <?php
 
-define('RATIO_HEALTH', 0.1) ; // 健康保険の保険料率（うち 1/2 個人負担）
 define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率（うち 1/2 個人負担）
 define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率（うち 1/3 個人負担）
 define('RATIO_ACCIDENT', 0.003) ; // 労災保険の保険料率（会社が全額負担）
@@ -57,8 +56,13 @@ class IncomeSimulator
     $stmt->bindValue('user_id', $user_id) ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
+
+    $stmt = $pdo->prepare("SELECT * FROM prefectures WHERE id = :prefecture_id") ;
+    $stmt->bindValue('prefecture_id', $user->prefecture_id) ;
+    $stmt->execute() ;
+    $prefecture = $stmt->fetch() ;
     $insurance_fee = [
-      'health' => $user->income * RATIO_HEALTH,
+      'health' => $user->income * $prefecture->health_insurance_rate,
       'walfare_pension' => $user->income * RATIO_WALFARE_PENSION,
       'employee' => $user->income * RATIO_EMPLOYEE,
       'accident' => $user->income * RATIO_ACCIDENT

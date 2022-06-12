@@ -40,9 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $user_id = $_SESSION['user_id'] ;
 // ユーザー情報の獲得
 $user = get_user_info($pdo) ;
-
+// ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
-
+// 都道府県のテーブルを獲得
+$prefectures = get_prefectures_info($pdo) ;
 ?>
 
 
@@ -59,11 +60,11 @@ $cost_items = get_cost_items($pdo) ;
     <br>
     勤務地（都道府県）：
     <select name="prefecture_id">
-      <?php for ($i = 1 ; $i <= 47 ; $i++):?>
-        <option value="<?= $i ;?>" <?= ($user->prefecture_id === $i) ? 'selected' : '' ; ?> >
-          <?= $prefecture_names[$i - 1] ;?>
+      <?php foreach ($prefectures as $prefecture):?>
+        <option value="<?= $prefecture->id ?>" <?= ($user->prefecture_id === $prefecture->id) ? 'selected' : '' ; ?> >
+          <?= ($prefecture->name === '') ? $prefecture_names[$prefecture->id - 1] : $prefecture_name ;?>
         </option>
-      <?php endfor ;?>
+      <?php endforeach ;?>
     </select>
     <br>
     扶養人数：
