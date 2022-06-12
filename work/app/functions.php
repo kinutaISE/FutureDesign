@@ -1,4 +1,11 @@
 <?php
+// パスワードと確認用のパスワードが合致するか（合致する場合はtrueを返す）
+function check_password_matching()
+{
+  $password = filter_input(INPUT_POST, 'password') ;
+  $password_confirmed = filter_input(INPUT_POST, 'password_confirmed') ;
+  return ($password === $password_confirmed) ;
+}
 // users テーブルの操作 ////////////////////////////////////////////////////////////
 // 入力されたIDのユーザーの抽出
 function find_user_id($pdo)
@@ -31,16 +38,44 @@ function find_user_email($pdo)
 // ユーザーの登録
 function regist_user($pdo)
 {
-  $user_id = filter_input(INPUT_POST, 'user_id') ;
-  $password = filter_input(INPUT_POST, 'password') ;
-  $email = filter_input(INPUT_POST, 'email') ;
-  $stmt = $pdo->prepare(
-    "INSERT INTO users (id, password, email) VALUES (:user_id, :password, :email)"
-  ) ;
-  $stmt->bindValue('user_id', $user_id) ;
-  $stmt->bindValue('password', $password) ;
-  $stmt->bindValue('email', $email) ;
-  $stmt->execute() ;
+  // 操作：入力されたID、パスワード、メールアドレスをもつユーザーを users へ追加する
+  // 対象：users テーブル
+
+  // 成功したかどうか、メッセージ、リンクをセットにして返す
+  $result = [
+    'is_successful' => true,
+    'message' => '',
+    'link' => ''
+  ] ;
+  // 追加するべきユーザーかどうかのチェック
+  if ( find_user_id($pdo) !== false ) {
+    // 同じIDのユーザーが存在する場合
+    $result['message'] = '既に同じ ID のユーザーが存在します' ;
+    $result['link'] = '<a href="signup.php">戻る</a>' ;
+  } else if ( find_user_email($pdo) !== false ) {
+    // 同じメールアドレスのユーザーが存在する場合
+    $result['message'] = '既に同じメールアドレスで登録されているユーザーが存在します' ;
+    $result['link'] = '<a href="signup.php">戻る</a>' ;
+  } else if ( !check_password_matching() ) {
+    // パスワードと再入力パスワードが異なった場合
+    $result['message'] = '再入力されたパスワードが間違っています' ;
+    $result['link'] = '<a href="signup.php">戻る</a>' ;
+  } else {
+    // ユーザーの追加
+    $user_id = filter_input(INPUT_POST, 'user_id') ;
+    $password = filter_input(INPUT_POST, 'password') ;
+    $email = filter_input(INPUT_POST, 'email') ;
+    $stmt = $pdo->prepare(
+      "INSERT INTO users (id, password, email) VALUES (:user_id, :password, :email)"
+    ) ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->bindValue('password', $password) ;
+    $stmt->bindValue('email', $email) ;
+    $stmt->execute() ;
+    $result['message'] = '登録が完了しました' ;
+    $result['link'] = '<a href="login_form.php">ログイン</a>' ;
+  }
+  return $result ;
 }
 
 // ユーザー情報の獲得
