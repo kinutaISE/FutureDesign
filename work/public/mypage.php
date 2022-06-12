@@ -3,6 +3,12 @@
 require_once('../app/config.php') ;
 include_once('_parts/_header.php') ;
 
+// セッションタイムアウト時の処理
+if ( !isset($_SESSION['user_id']) ) {
+  header('Location: ' . SITE_URL . '/../session_timeout.php') ;
+  exit ;
+}
+
 // PDOオブジェクトの獲得
 $pdo = Database::getInstance() ;
 
