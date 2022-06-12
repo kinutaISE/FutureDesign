@@ -1,11 +1,8 @@
 DROP TABLE IF EXISTS users ;
-CREATE TABLE preusers(
-
-) ;
 CREATE TABLE users(
   id VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
-  mail_adress VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
   age INT,
   prefecture_id INT,
   income INT,
