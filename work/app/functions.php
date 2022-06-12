@@ -1,5 +1,48 @@
 <?php
-// user テーブルの操作 ////////////////////////////////////////////////////////////
+// users テーブルの操作 ////////////////////////////////////////////////////////////
+// 入力されたIDのユーザーの抽出
+function find_user_id($pdo)
+{
+  // 操作：入力されたIDをもつユーザーを抽出する
+  // 対象：users テーブル
+  $user_id = filter_input(INPUT_POST, 'user_id') ;
+  $stmt = $pdo->prepare("
+    SELECT * FROM users WHERE id = :user_id
+  ") ;
+  $stmt->bindValue('user_id', $user_id) ;
+  $stmt->execute() ;
+  $user = $stmt->fetch() ;
+  return $user ;
+}
+// 入力されたメールアドレスをもつユーザーの抽出
+function find_user_email($pdo)
+{
+  // 操作：入力されたメールアドレスをもつユーザーを抽出する
+  // 対象：users テーブル
+  $email = filter_input(INPUT_POST, 'email') ;
+  $stmt = $pdo->prepare("
+    SELECT * FROM users WHERE email = :email
+  ") ;
+  $stmt->bindValue('email', $email) ;
+  $stmt->execute() ;
+  $user = $stmt->fetch() ;
+  return $user ;
+}
+// ユーザーの登録
+function regist_user($pdo)
+{
+  $user_id = filter_input(INPUT_POST, 'user_id') ;
+  $password = filter_input(INPUT_POST, 'password') ;
+  $email = filter_input(INPUT_POST, 'email') ;
+  $stmt = $pdo->prepare(
+    "INSERT INTO users (id, password, email) VALUES (:user_id, :password, :email)"
+  ) ;
+  $stmt->bindValue('user_id', $user_id) ;
+  $stmt->bindValue('password', $password) ;
+  $stmt->bindValue('email', $email) ;
+  $stmt->execute() ;
+}
+
 // ユーザー情報の獲得
 function get_user_info($pdo)
 {

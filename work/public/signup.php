@@ -11,7 +11,7 @@ include_once('_parts/_header.php') ;
   <form method="post" action="register.php">
     <div>
       <label>メールアドレス</label>
-      <input type="email" name="email" action="login.php">
+      <input type="email" name="email" action="register.php">
     </div>
     <div>
       <label>ユーザーID（5文字以上16文字以内/半角数字、半角英小文字、半角英大文字）</label>
