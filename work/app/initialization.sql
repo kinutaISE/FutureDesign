@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS prefectures ;
 CREATE TABLE prefectures(
   id INT NOT NULL AUTO_INCREMENT, -- 都道府県ID（主キー）
   name VARCHAR(255) NOT NULL, -- 都道府県名
+  health_insurance_rate FLOAT NOT NULL, -- 健康保険料率
   PRIMARY KEY (id)
 ) ;
 
