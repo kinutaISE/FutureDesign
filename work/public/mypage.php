@@ -1,6 +1,6 @@
 <?php
 
-require_once('../app/config.php') ;
+require('../app/config.php') ;
 include_once('_parts/_header.php') ;
 
 // セッションタイムアウト時の処理
@@ -18,12 +18,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   switch ($action) {
     case 'add_cost_item':
       add_cost_item($pdo) ;
+      header('Location: ' . SITE_URL . '/../mypage.php') ;
+      exit ;
       break ;
     case 'delete_cost_item':
       delete_cost_item($pdo) ;
+      header('Location: ' . SITE_URL . '/../mypage.php') ;
+      exit ;
       break ;
     case 'update_user_info':
       update_user_info($pdo) ;
+      header('Location: ' . SITE_URL . '/../mypage.php') ;
+      exit ;
       break ;
     default:
       exit('Invalid post request!!') ;
