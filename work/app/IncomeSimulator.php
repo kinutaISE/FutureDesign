@@ -7,38 +7,61 @@ define('RATIO_ACCIDENT', 0.003) ; // 労災保険の保険料率（会社が全�
 
 class IncomeSimulator
 {
+  // 所得税率
+  private static $income_tax_rate = [
+    'range_1' => 0.05,
+    'range_2' => 0.1,
+    'range_3' => 0.2,
+    'range_4' => 0.23,
+    'range_5' => 0.33,
+    'range_6' => 0.4,
+    'range_7' => 0.44
+  ] ;
+  // 控除額
+  private static $deducation = [
+    'range_1' => 0,
+    'range_2' => 97500,
+    'range_3' => 427500,
+    'range_4' => 636000,
+    'range_5' => 1536000,
+    'range_6' => 2796000,
+    'range_7' => 4796000
+  ] ;
   // 所得税の計算 //////////////////////////////////////////////////
-  public static function calc_income_tax($income, $anual_income_type)
+  public static function calc_income_tax($pdo)
   {
-    // 所得税率
-    $income_tax_rate = [
-      '年収価格帯A' => 0.05,
-      '年収価格帯B' => 0.1,
-      '年収価格帯C' => 0.2,
-    ] ;
-    // 控除額
-    $deducation = [
-      '年収価格帯A' => 0,
-      '年収価格帯B' => 97500,
-      '年収価格帯C' => 427500,
-    ] ;
-    return ($income - $deducation[$anual_income_type]) * $income_tax_rate[$anual_income_type] ;
+    $user_id = $_SESSION['user_id'] ;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
+    return ($user->income - IncomeSimulator::$deducation[$user->anual_income_type]) * IncomeSimulator::$income_tax_rate[$user->anual_income_type] ;
   }
 
   // 住民税税の計算 //////////////////////////////////////////////////
-  public static function calc_resident_tax($income, $anual_income_type)
+  public static function calc_resident_tax($pdo)
   {
-    return $income * ( ($anual_income_type === '年収価格帯A') ? 0 : 0.1 ) ;
+    $user_id = $_SESSION['user_id'] ;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
+    return $user->income * ( ($user->anual_income_type === '年収価格帯A') ? 0 : 0.1 ) ;
   }
 
   // 社会保険料の計算 //////////////////////////////////////////////////
-  public static function calc_personal_burden_insurance($income)
+  public static function calc_personal_burden_insurance($pdo)
   {
+    $user_id = $_SESSION['user_id'] ;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
     $insurance_fee = [
-      'health' => $income * RATIO_HEALTH,
-      'walfare_pension' => $income * RATIO_WALFARE_PENSION,
-      'employee' => $income * RATIO_EMPLOYEE,
-      'accident' => $income * RATIO_ACCIDENT
+      'health' => $user->income * RATIO_HEALTH,
+      'walfare_pension' => $user->income * RATIO_WALFARE_PENSION,
+      'employee' => $user->income * RATIO_EMPLOYEE,
+      'accident' => $user->income * RATIO_ACCIDENT
     ] ;
     return $insurance_fee['health'] / 2 +
       $insurance_fee['walfare_pension'] / 2 +
@@ -47,12 +70,17 @@ class IncomeSimulator
   }
 
   // 手取りの計算 /////////////////////////////////////////////////////////////////
-  public static function calc_residual($income, $anual_income_type)
+  public static function calc_residual($pdo)
   {
-    return $income - (
-      IncomeCalculator::calc_income_tax($income, $anual_income_type) +
-      IncomeCalculator::calc_resident_tax($income, $anual_income_type) +
-      IncomeCalculator::calc_personal_burden_insurance($income)
+    $user_id = $_SESSION['user_id'] ;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
+    return $user->income - (
+      IncomeSimulator::calc_income_tax($pdo) +
+      IncomeSimulator::calc_resident_tax($pdo) +
+      IncomeSimulator::calc_personal_burden_insurance($pdo)
     ) ;
   }
 }

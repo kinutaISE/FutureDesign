@@ -111,7 +111,7 @@ $cost_items = get_cost_items($pdo) ;
   <?php endforeach ; ?>
   </ul>
   <!-- 収入シミュレーションへのリンク -->
-  <p><a href="incom_simulation.php">収入のシミュレーションを行う</a></p>
+  <p><a href="income_simulation.php">収入のシミュレーションを行う</a></p>
 </body>
 
 <?php
