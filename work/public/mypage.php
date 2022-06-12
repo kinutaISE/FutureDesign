@@ -55,8 +55,6 @@ $cost_items = get_cost_items($pdo) ;
   <form method="post" action="?action=update_user_info">
     <!-- 基本情報 -->
     <h2>基本情報</h2>
-    名前：<input type="text" name="user_name" placeholder="名前を記入してください">
-    <br>
     年齢：<input type="number" name="age" value="<?= $user->age ;?>" placeholder="年齢を記入してください">
     <br>
     勤務地（都道府県）：
