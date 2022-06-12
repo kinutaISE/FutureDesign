@@ -79,9 +79,13 @@ $cost_items = get_cost_items($pdo) ;
     <h2>収入に関する情報</h2>
     昨年度の年収価格帯：
     <br>
-    <label><input type="radio" name="anual_income_type" value="年収価格帯A" checked="checked">年収価格帯A</label>
-    <label><input type="radio" name="anual_income_type" value="年収価格帯B">年収価格帯B</label>
-    <label><input type="radio" name="anual_income_type" value="年収価格帯C">年収価格帯C</label>
+    <?php for ($i = 1 ; $i <= 7 ; $i++) :?>
+      <label>
+        <input type="radio" name="anual_income_type" value="range_<?= $i ;?>">
+        <?= $anual_income_type_names[$i - 1] ;?>
+        <br>
+      </label>
+    <?php endfor ;?>
     <br>
     給与（額面）：<input type="number" name="income" value="<?= $user->income ;?>" placeholder="額面の給与を記入してください">円
     <br>
@@ -106,6 +110,8 @@ $cost_items = get_cost_items($pdo) ;
     </li>
   <?php endforeach ; ?>
   </ul>
+  <!-- 収入シミュレーションへのリンク -->
+  <p><a href="incom_simulation.php">収入のシミュレーションを行う</a></p>
 </body>
 
 <?php

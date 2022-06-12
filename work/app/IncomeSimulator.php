@@ -5,8 +5,8 @@ define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率（うち
 define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率（うち 1/3 個人負担）
 define('RATIO_ACCIDENT', 0.003) ; // 労災保険の保険料率（会社が全額負担）
 
-class IncomeCalculator
-{  
+class IncomeSimulator
+{
   // 所得税の計算 //////////////////////////////////////////////////
   public static function calc_income_tax($income, $anual_income_type)
   {
