@@ -10,10 +10,6 @@ include_once('_parts/_header.php') ;
   <h1>ログイン</h1>
   <form method="post" action="login.php">
     <div>
-      <label>メールアドレス</label>
-      <input type="email" name="email" action="login.php">
-    </div>
-    <div>
       <label>ユーザーID</label>
       <input type="text" name="user_id" minlength="5" maxlength="16" pattern="^[a-zA-Z0-9]+$" required>
     </div>

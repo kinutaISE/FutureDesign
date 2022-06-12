@@ -10,6 +10,10 @@ include_once('_parts/_header.php') ;
   <h1>新規登録</h1>
   <form method="post" action="register.php">
     <div>
+      <label>メールアドレス</label>
+      <input type="email" name="email" action="login.php">
+    </div>
+    <div>
       <label>ユーザーID（5文字以上16文字以内/半角数字、半角英小文字、半角英大文字）</label>
       <input type="text" name="user_id" minlength="5" maxlength="16" pattern="^[a-zA-Z0-9]+$" required>
     </div>
