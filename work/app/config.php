@@ -68,5 +68,6 @@ $anual_income_type_names = [
 ] ;
 
 require_once(__DIR__ . '/Database.php') ;
+require_once(__DIR__ . '/User.php') ;
 require_once(__DIR__ . '/IncomeSimulator.php') ;
 require_once(__DIR__ . '/functions.php') ;

@@ -32,22 +32,22 @@ class IncomeSimulator
     $user_id = $_SESSION['user_id'] ;
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
     $stmt->bindValue('user_id', $user_id) ;
+    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    // 所得税率が考慮されていない！！！！！
-    return ($user->income - IncomeSimulator::$deducation[$user->anual_income_type]) ;
+    return $user->get_income() * IncomeSimulator::$income_tax_rate[$user->get_anual_income_type()] - (IncomeSimulator::$deducation[$user->get_anual_income_type()] / 12) ;
   }
 
-  // 住民税の計算 ////////////////////////////////////////////////////
+  // 住民税の計算 //////////////////////////////////////////////////
   public static function calc_resident_tax($pdo)
   {
     $user_id = $_SESSION['user_id'] ;
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
     $stmt->bindValue('user_id', $user_id) ;
+    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    // 年収が考慮されていない！！！
-    return 0 ;
+    return $user->get_income() * ( ($user->get_anual_income_type() === 'range_1') ? 0 : 0.1 ) ;
   }
 
   // 社会保険料の計算 //////////////////////////////////////////////////

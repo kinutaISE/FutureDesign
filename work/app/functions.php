@@ -102,8 +102,6 @@ function update_user_info($pdo)
   $prefecture_id = ($prefecture_id === '') ? NULL : $prefecture_id ;
   $dependents_num = filter_input(INPUT_POST, 'dependents_num') ;
   $dependents_num = ($dependents_num === '') ? NULL : $dependents_num ;
-  $anual_income_type = filter_input(INPUT_POST, 'anual_income_type') ;
-  $anual_income_type = ($anual_income_type === '') ? NULL : $anual_income_type ;
   $income = trim( filter_input(INPUT_POST, 'income') ) ;
   $income = ($income === '') ? NULL : $income ;
   $stmt = $pdo->prepare("
@@ -113,7 +111,6 @@ function update_user_info($pdo)
       age = :age,
       prefecture_id = :prefecture_id,
       dependents_num = :dependents_num,
-      anual_income_type = :anual_income_type,
       income = :income
     WHERE
       id = :user_id
@@ -122,7 +119,6 @@ function update_user_info($pdo)
   $stmt->bindValue('prefecture_id', $prefecture_id, PDO::PARAM_INT) ;
   $stmt->bindValue('dependents_num', $dependents_num, PDO::PARAM_INT) ;
   $stmt->bindValue('income', $income, PDO::PARAM_INT) ;
-  $stmt->bindValue('anual_income_type', $anual_income_type, PDO::PARAM_STR) ;
   $stmt->bindValue('user_id', $user_id, PDO::PARAM_STR) ;
   $stmt->execute() ;
 }
