@@ -78,16 +78,6 @@ $prefectures = get_prefectures_info($pdo) ;
 
     <!-- 収入 -->
     <h2>収入に関する情報</h2>
-    昨年度の年収価格帯：
-    <br>
-    <select name="anual_income_type">
-      <?php for ($i = 1 ; $i <= 7 ; $i++) :?>
-        <option value="range_<?= $i ;?>" <?= ($user->anual_income_type === ("range_" . $i)) ? 'selected' : '' ?>>
-          <?= $anual_income_type_names[$i - 1] ;?>
-        </option>
-      <?php endfor ;?>
-    </select>
-    <br>
     給与（額面）：<input type="number" name="income" value="<?= $user->income ;?>" placeholder="額面の給与を記入してください">円
     <br>
     <button>保存</button>

@@ -34,7 +34,8 @@ class IncomeSimulator
     $stmt->bindValue('user_id', $user_id) ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    return ($user->income - IncomeSimulator::$deducation[$user->anual_income_type]) * IncomeSimulator::$income_tax_rate[$user->anual_income_type] ;
+    // 所得税率が考慮されていない！！！！！
+    return ($user->income - IncomeSimulator::$deducation[$user->anual_income_type]) ;
   }
 
   // 住民税の計算 ////////////////////////////////////////////////////
@@ -45,7 +46,8 @@ class IncomeSimulator
     $stmt->bindValue('user_id', $user_id) ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    return $user->income * ( ($user->anual_income_type === '年収価格帯A') ? 0 : 0.1 ) ;
+    // 年収が考慮されていない！！！
+    return 0 ;
   }
 
   // 社会保険料の計算 //////////////////////////////////////////////////
