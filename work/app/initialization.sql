@@ -6,15 +6,6 @@ CREATE TABLE users(
   age INT, -- 年齢
   prefecture_id INT, -- 都道府県ID
   dependents_num INT, -- 扶養人数
-  anual_income_type ENUM( -- 昨年度の年収価格帯
-    'range_1', -- 195万円以下
-    'range_2', -- 195万円超、330万円以下
-    'range_3', -- 330万円超、695万円以下
-    'range_4', -- 695万円超、900万円以下
-    'range_5', -- 900万円超、1,800万円以下
-    'range_6', -- 1,800万円越、4,000万円以下
-    'range_7' -- 4,000万円越
-  ),
   income INT, -- 給与（額面）
   partner_id INT, -- パートナーID
   PRIMARY KEY (id)

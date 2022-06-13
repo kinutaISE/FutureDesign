@@ -37,7 +37,7 @@ class IncomeSimulator
     return ($user->income - IncomeSimulator::$deducation[$user->anual_income_type]) * IncomeSimulator::$income_tax_rate[$user->anual_income_type] ;
   }
 
-  // 住民税税の計算 //////////////////////////////////////////////////
+  // 住民税の計算 ////////////////////////////////////////////////////
   public static function calc_resident_tax($pdo)
   {
     $user_id = $_SESSION['user_id'] ;
