@@ -102,27 +102,47 @@ function update_user_info($pdo)
   $prefecture_id = ($prefecture_id === '') ? NULL : $prefecture_id ;
   $dependents_num = filter_input(INPUT_POST, 'dependents_num') ;
   $dependents_num = ($dependents_num === '') ? NULL : $dependents_num ;
-  $income = trim( filter_input(INPUT_POST, 'income') ) ;
-  $income = ($income === '') ? NULL : $income ;
   $stmt = $pdo->prepare("
     UPDATE
       users
     SET
       age = :age,
       prefecture_id = :prefecture_id,
-      dependents_num = :dependents_num,
-      income = :income
+      dependents_num = :dependents_num
     WHERE
       id = :user_id
   ") ;
   $stmt->bindValue('age', $age, PDO::PARAM_INT) ;
   $stmt->bindValue('prefecture_id', $prefecture_id, PDO::PARAM_INT) ;
   $stmt->bindValue('dependents_num', $dependents_num, PDO::PARAM_INT) ;
-  $stmt->bindValue('income', $income, PDO::PARAM_INT) ;
   $stmt->bindValue('user_id', $user_id, PDO::PARAM_STR) ;
   $stmt->execute() ;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+
+// earnings テーブルの操作/////////////////////////////////////////////////////////
+function add_earning_item($pdo)
+{
+  // 操作：給与項目の追加
+  // 対象：earnings テーブル
+  $user_id = $_SESSION['user_id'] ;
+  $name = trim(filter_input(INPUT_POST, 'earning_item_name')) ;
+  $amount = trim(filter_input(INPUT_POST, 'earning_item_amount')) ;
+  $is_taxation = trim(filter_input(INPUT_POST, 'earning_item_is_taxation')) ;
+  if ($name === '' || $amount === '' || $is_taxation === '')
+    return ;
+  $stmt = $pdo->prepare("
+    INSERT INTO earnings (name, amount, is_taxation, user_id)
+    VALUES (:name, :amount, :is_taxation, :user_id)
+  ") ;
+  $stmt->bindValue('name', $name) ;
+  $stmt->bindValue('amount', $amount) ;
+  $stmt->bindValue('is_taxation', $is_taxation) ;
+  $stmt->bindValue('user_id', $user_id) ;
+  $stmt->execute() ;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -31,6 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header('Location: ' . SITE_URL . '/../mypage.php') ;
       exit ;
       break ;
+    case 'add_earning_item':
+      add_earning_item($pdo) ;
+      header('Location: ' . SITE_URL . '/../mypage.php') ;
+      exit ;
+      break ;
     default:
       exit('Invalid post request!!') ;
   }
@@ -75,32 +80,54 @@ $prefectures = get_prefectures_info($pdo) ;
         </option>
       <?php endfor ;?>
     </select>
-
-    <!-- 収入 -->
-    <h2>収入に関する情報</h2>
-    給与（額面）：<input type="number" name="income" value="<?= $user->income ;?>" placeholder="額面の給与を記入してください">円
-    <br>
     <button>保存</button>
   </form>
 
+  <!-- 収入 -->
+  <div>
+    <h2>収入に関する情報</h2>
+    <h3>給与に関する情報</h3>
+    <!-- 給与の入力フォーム -->
+    <form method="post" action="?action=add_earning_item">
+      <!-- 給与項目名 -->
+      <input type="text" name="earning_item_name" placeholder="給与項目名を記入してください">
+      <!-- 給与額 -->
+      <input type="number" name="earning_item_amount" placeholder="給与額を記入してください">
+      <!-- 課税 or 非課税 -->
+      <label>
+        <input type="radio" name="earning_item_is_taxation" value="1">課税
+      </label>
+      <label>
+        <input type="radio" name="earning_item_is_taxation" value="0">非課税
+      </label>
+      <button>追加</button>
+    </form>
+    <!-- 給与の一覧 -->
+    
+  </div>
+
   <!-- 支出 -->
-  <h2>支出に関する情報</h2>
-  <form method="post" action="?action=add_cost_item">
-    <input type="text" name="cost_item_name" placeholder="支出の項目名を記入してください">
-    <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
-    <button>Add</button>
-  </form>
-  <ul>
-  <?php foreach ($cost_items as $cost_item):?>
-    <li>
-      <?= $cost_item->name . ' : ' . number_format($cost_item->value) . '円' ; ?>
-      <form method="post" action="?action=delete_cost_item">
-        <input type="hidden" name="cost_item_id" value="<?= $cost_item->id ; ?>">
-        <button>削除</button>
-      </form>
-    </li>
-  <?php endforeach ; ?>
-  </ul>
+  <div>
+    <h2>支出に関する情報</h2>
+    <!-- 支出項目の入力フォーム -->
+    <form method="post" action="?action=add_cost_item">
+      <input type="text" name="cost_item_name" placeholder="支出の項目名を記入してください">
+      <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
+      <button>追加</button>
+    </form>
+    <ul>
+    <!-- 支出項目の一覧 -->
+    <?php foreach ($cost_items as $cost_item):?>
+      <li>
+        <?= $cost_item->name . ' : ' . number_format($cost_item->value) . '円' ; ?>
+        <form method="post" action="?action=delete_cost_item">
+          <input type="hidden" name="cost_item_id" value="<?= $cost_item->id ; ?>">
+          <button>削除</button>
+        </form>
+      </li>
+    <?php endforeach ; ?>
+    </ul>
+  </div>
   <!-- 収入シミュレーションへのリンク -->
   <p><a href="income_simulation.php">収入のシミュレーションを行う</a></p>
 </body>
