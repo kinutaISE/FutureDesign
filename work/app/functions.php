@@ -123,6 +123,20 @@ function update_user_info($pdo)
 ////////////////////////////////////////////////////////////////////////////////
 
 // earnings テーブルの操作/////////////////////////////////////////////////////////
+// 給与項目の抽出
+function get_earning_items($pdo)
+{
+  // 操作：給与項目の抽出
+  // 対象：earnings テーブル
+  $user_id = $_SESSION['user_id'] ;
+  $stmt = $pdo->prepare("SELECT * FROM earnings WHERE user_id = :user_id") ;
+  $stmt->bindValue('user_id', $user_id) ;
+  $stmt->execute() ;
+  return $stmt->fetchAll(PDO::FETCH_CLASS, 'EarningItem') ;
+}
+
+
+// 給与項目の追加
 function add_earning_item($pdo)
 {
   // 操作：給与項目の追加

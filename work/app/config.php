@@ -63,11 +63,12 @@ $anual_income_type_names = [
   '330万円超、695万円以下',
   '695万円超、900万円以下',
   '900万円超、1,800万円以下',
-  '1,800万円越、4,000万円以下',
-  '4,000万円越'
+  '1,800万円超、4,000万円以下',
+  '4,000万円超'
 ] ;
 
 require_once(__DIR__ . '/Database.php') ;
 require_once(__DIR__ . '/User.php') ;
+require_once(__DIR__ . '/EarningItem.php') ;
 require_once(__DIR__ . '/IncomeSimulator.php') ;
 require_once(__DIR__ . '/functions.php') ;

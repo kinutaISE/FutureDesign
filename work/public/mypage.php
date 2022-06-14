@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $user_id = $_SESSION['user_id'] ;
 // ユーザー情報の獲得
 $user = get_user_info($pdo) ;
+// ログインしているユーザーの給与項目の獲得
+$earning_items = get_earning_items($pdo) ;
 // ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
 // 都道府県のテーブルを獲得
@@ -103,7 +105,13 @@ $prefectures = get_prefectures_info($pdo) ;
       <button>追加</button>
     </form>
     <!-- 給与の一覧 -->
-    
+    <ul>
+    <?php foreach ($earning_items as $earning_item) :?>
+      <li>
+        <?= $earning_item->get_info() ; ?>
+      </li>
+    <?php endforeach ; ?>
+    </ul>
   </div>
 
   <!-- 支出 -->
