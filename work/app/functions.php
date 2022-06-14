@@ -157,6 +157,16 @@ function add_earning_item($pdo)
   $stmt->bindValue('user_id', $user_id) ;
   $stmt->execute() ;
 }
+// 給与項目の削除
+function delete_earning_item($pdo)
+{
+  // 操作：給与項目の削除
+  // 対象：earnings テーブル
+  $id = filter_input(INPUT_POST, 'earning_item_id') ;
+  $stmt = $pdo->prepare("DELETE FROM earnings WHERE id = :id") ;
+  $stmt->bindValue('id', $id) ;
+  $stmt->execute() ;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -210,9 +220,7 @@ function delete_cost_item($pdo)
 {
   // 操作：選択した支出項目をテーブルから削除する
   // 対象：cost_items
-  $stmt = $pdo->prepare("
-    DELETE FROM cost_items WHERE id = :id
-  ") ;
+  $stmt = $pdo->prepare("DELETE FROM cost_items WHERE id = :id") ;
   $id = filter_input(INPUT_POST, 'cost_item_id') ;
   $stmt->bindParam('id', $id);
   $stmt->execute() ;

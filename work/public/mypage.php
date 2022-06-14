@@ -36,6 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header('Location: ' . SITE_URL . '/../mypage.php') ;
       exit ;
       break ;
+    case 'delete_earning_item':
+      delete_earning_item($pdo) ;
+      header('Location: ' . SITE_URL . '/../mypage.php') ;
+      exit ;
+      break ;
     default:
       exit('Invalid post request!!') ;
   }
@@ -109,6 +114,10 @@ $prefectures = get_prefectures_info($pdo) ;
     <?php foreach ($earning_items as $earning_item) :?>
       <li>
         <?= $earning_item->get_info() ; ?>
+        <form method="post" action="?action=delete_earning_item">
+          <input type="hidden" name="earning_item_id" value="<?= $earning_item->get_id() ;?>">
+          <button>削除</button>
+        </form>
       </li>
     <?php endforeach ; ?>
     </ul>
@@ -123,8 +132,8 @@ $prefectures = get_prefectures_info($pdo) ;
       <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
       <button>追加</button>
     </form>
-    <ul>
     <!-- 支出項目の一覧 -->
+    <ul>
     <?php foreach ($cost_items as $cost_item):?>
       <li>
         <?= $cost_item->name . ' : ' . number_format($cost_item->value) . '円' ; ?>
