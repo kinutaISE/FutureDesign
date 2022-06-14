@@ -13,7 +13,7 @@ class User
   public function get_earning_items($pdo)
   {
     $stmt = $pdo->prepare("SELECT * FROM earnings WHERE user_id = :id") ;
-    $stmt->bindValue('user_id', $id) ;
+    $stmt->bindValue('id', $this->id) ;
     $stmt->execute() ;
     return $stmt->fetchAll() ;
   }
@@ -39,8 +39,8 @@ class User
     （キーの値（課税・非課税）は保持される）
     */
     $assumed_anual_earning = array_map(
-      function ($amount) {
-        return $amount * 12 ;
+      function ($earning_item) {
+        return $earning_item->get_amount() * 12 ;
       } ,
       get_earning_items($pdo)
     ) ;

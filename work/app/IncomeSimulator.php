@@ -38,15 +38,15 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning() ;
+    $total_earning = $user->get_anual_earning($pdo) ;
     // ユーザーの課税給与合計の価格帯を獲得
-    $anual_earning_type = $user->get_anual_earning_type() ;
+    $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
       所得税を返す
       所得税 = 課税所得金額 * 税率 - (税額控除額 / 12)
     */
     $earnings_tax =
-      $total_earning['課税'] * IncomeSimulator::::$income_tax_rate[$anual_earning_type]
+      $total_earning['課税'] * IncomeSimulator::$income_tax_rate[$anual_earning_type]
       - IncomeSimulator::$deducation[$anual_earning_type] / 12 ;
     return $earnings_tax ;
   }
@@ -63,9 +63,9 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning() ;
+    $total_earning = $user->get_anual_earning($pdo) ;
     // ユーザーの課税給与合計の価格帯を獲得
-    $anual_earning_type = $user->get_anual_earning_type() ;
+    $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
       住民税を返す
       住民税 = 課税所得金額 * 住民税率
@@ -89,11 +89,11 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning() ;
+    $total_earning = $user->get_anual_earning($pdo) ;
     // ユーザーの給与合計（課税・非課税問わない）を獲得
     $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
     // ユーザーの課税給与合計の価格帯を獲得
-    $anual_earning_type = $user->get_anual_earning_type() ;
+    $anual_earning_type = $user->get_anual_earning_type($pdo) ;
 
     // ユーザーの在住都道府県の情報を抽出
     $stmt = $pdo->prepare("SELECT * FROM prefectures WHERE id = :prefecture_id") ;
@@ -152,11 +152,11 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning() ;
+    $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの給与合計（課税・非課税問わない）を獲得
     $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
     // ユーザーの課税給与合計の価格帯を獲得
-    $anual_earning_type = $user->get_anual_earning_type() ;
+    $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
     ユーザーの手取りを計算
       手取り = 給与額 - (所得税 + 住民税 + 社会保険料)
