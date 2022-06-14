@@ -38,7 +38,7 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning($pdo) ;
+    $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの課税給与合計の価格帯を獲得
     $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
@@ -63,7 +63,7 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning($pdo) ;
+    $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの課税給与合計の価格帯を獲得
     $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
@@ -89,7 +89,7 @@ class IncomeSimulator
     $stmt->execute() ;
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_anual_earning($pdo) ;
+    $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの給与合計（課税・非課税問わない）を獲得
     $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
     // ユーザーの課税給与合計の価格帯を獲得
@@ -97,7 +97,7 @@ class IncomeSimulator
 
     // ユーザーの在住都道府県の情報を抽出
     $stmt = $pdo->prepare("SELECT * FROM prefectures WHERE id = :prefecture_id") ;
-    $stmt->bindValue('prefecture_id', $user->prefecture_id) ;
+    $stmt->bindValue('prefecture_id', $user->get_prefecture_id()) ;
     $stmt->execute() ;
     $prefecture = $stmt->fetch() ;
     /*
@@ -114,11 +114,12 @@ class IncomeSimulator
       - 現状、「その他各種事業」(3%) として計算する
     */
     $insurance_fee = [
-      'health' => $total_earning_all * $prefecture->health_insurance_rate,
-      'walfare_pension' => $total_earning_all * RATIO_WALFARE_PENSION,
-      'employee' => $total_earning_all * RATIO_EMPLOYEE,
-      'accident' => $total_earning * RATIO_ACCIDENT
+      '健康保険' => $total_earning_all * $prefecture->health_insurance_rate,
+      '厚生年金' => $total_earning_all * RATIO_WALFARE_PENSION,
+      '雇用保険' => $total_earning_all * RATIO_EMPLOYEE,
+      '労災保険' => $total_earning_all * RATIO_ACCIDENT
     ] ;
+    return $insurance_fee ;
   }
 
   // 社会保険料（個人負担）の計算 //////////////////////////////////////////////////
@@ -133,10 +134,10 @@ class IncomeSimulator
       - 雇用保険：1/3
       - 労災保険：0
     */
-    $insurance_fee['health'] = $insurance_fee['health'] / 2 ;
-    $$insurance_fee['walfare_pension'] = $insurance_fee['walfare_pension'] / 2 ;
-    $insurance_fee['employee'] = $insurance_fee['employee'] / 3 ;
-    $insurance_fee['accident'] = 0 ;
+    $insurance_fee['健康保険'] = $insurance_fee['健康保険'] / 2 ;
+    $insurance_fee['厚生年金'] = $insurance_fee['厚生年金'] / 2 ;
+    $insurance_fee['雇用保険'] = $insurance_fee['雇用保険'] / 3 ;
+    $insurance_fee['労災保険'] = 0 ;
     return $insurance_fee ;
   }
 
@@ -155,8 +156,6 @@ class IncomeSimulator
     $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの給与合計（課税・非課税問わない）を獲得
     $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
-    // ユーザーの課税給与合計の価格帯を獲得
-    $anual_earning_type = $user->get_anual_earning_type($pdo) ;
     /*
     ユーザーの手取りを計算
       手取り = 給与額 - (所得税 + 住民税 + 社会保険料)

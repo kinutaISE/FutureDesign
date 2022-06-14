@@ -9,6 +9,11 @@ class User
   private $dependents_num ; // 扶養人数
   private $prefecture_id ; // 都道府県ID
   private $partner_id ; // パートナーID
+  // ユーザーの都道府県IDを返す関数
+  public function get_prefecture_id()
+  {
+    return $this->prefecture_id ;
+  }
   // ユーザーの給与項目を抽出する関数
   public function get_earning_items($pdo)
   {
@@ -39,10 +44,10 @@ class User
     （キーの値（課税・非課税）は保持される）
     */
     $assumed_anual_earning = array_map(
-      function ($earning_item) {
-        return $earning_item->get_amount() * 12 ;
+      function ($amount) {
+        return $amount * 12 ;
       } ,
-      get_earning_items($pdo)
+      $this->get_total_earning($pdo)
     ) ;
     if ($assumed_anual_earning['課税'] <= 1950000)
       return 'range_1' ;
