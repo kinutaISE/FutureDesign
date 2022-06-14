@@ -2,7 +2,7 @@
 
 define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率（うち 1/2 個人負担）
 define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率（うち 1/3 個人負担）
-define('RATIO_ACCIDENT', 0.003) ; // 労災保険の保険料率（会社が全額負担）
+define('RATIO_ACCIDENT', 0.03) ; // 労災保険の保険料率（会社が全額負担）
 
 class IncomeSimulator
 {
@@ -90,6 +90,8 @@ class IncomeSimulator
     $user = $stmt->fetch() ;
     // ユーザーの給与合計（課税・非課税別）を獲得
     $total_earning = $user->get_anual_earning() ;
+    // ユーザーの給与合計（課税・非課税問わない）を獲得
+    $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
     // ユーザーの課税給与合計の価格帯を獲得
     $anual_earning_type = $user->get_anual_earning_type() ;
 
@@ -102,18 +104,20 @@ class IncomeSimulator
     各種社会保険料を計算
      - 健康保険 = 課税所得金額 * 健康保険料率
       - 健康保険料率は都道府県ごとに決まっている（毎年変動）
-     - 厚生年金 = 標準報酬月額 * 厚生年金の保険料率
+     - 厚生年金 = 標準報酬月額 * 厚生年金料率
       - 現状、標準報酬月額 = 課税所得金額 + 非課税所得金額 と仮定する（要勉強）
-     - 雇用保険 = 標準報酬月額 * 雇用保険の保険料率
-      - 雇用保険の保険料率は事業の種類（一般 / 農林水産・清酒製造 / 建設）で異なる
+     - 雇用保険 = 標準報酬月額 * 雇用保険料率
+      - 雇用保険料率は事業の種類（一般 / 農林水産・清酒製造 / 建設）で異なる
       - 現状、一般の事業として計算をする（ユーザーの事業形態のオプションも未設定）
-     - 労災保険 = 
+     - 労災保険 = 標準報酬月額 * 労災保険料率
+      - 雇用保険料率は事業の種類（卸売、林業などなど）で異なる（労災保険率表にて公開されている）
+      - 現状、「その他各種事業」(3%) として計算する
     */
     $insurance_fee = [
-      'health' => $user->income * $prefecture->health_insurance_rate,
-      'walfare_pension' => $user->income * RATIO_WALFARE_PENSION,
-      'employee' => $user->income * RATIO_EMPLOYEE,
-      'accident' => $user->income * RATIO_ACCIDENT
+      'health' => $total_earning_all * $prefecture->health_insurance_rate,
+      'walfare_pension' => $total_earning_all * RATIO_WALFARE_PENSION,
+      'employee' => $total_earning_all * RATIO_EMPLOYEE,
+      'accident' => $total_earning * RATIO_ACCIDENT
     ] ;
   }
 
@@ -129,25 +133,40 @@ class IncomeSimulator
       - 雇用保険：1/3
       - 労災保険：0
     */
-
-    return $insurance_fee['health'] / 2 +
-      $insurance_fee['walfare_pension'] / 2 +
-      $insurance_fee['employee'] / 3 +
-      $insurance_fee['accident'] * 0 ;
+    $insurance_fee['health'] = $insurance_fee['health'] / 2 ;
+    $$insurance_fee['walfare_pension'] = $insurance_fee['walfare_pension'] / 2 ;
+    $insurance_fee['employee'] = $insurance_fee['employee'] / 3 ;
+    $insurance_fee['accident'] = 0 ;
+    return $insurance_fee ;
   }
 
   // 手取りの計算 /////////////////////////////////////////////////////////////////
   public static function calc_residual($pdo)
   {
+    // ユーザーIDの取得
     $user_id = $_SESSION['user_id'] ;
+    // ユーザー情報を抽出
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
     $stmt->bindValue('user_id', $user_id) ;
+    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    return $user->income - (
-      IncomeSimulator::calc_earning_tax($pdo) +
-      IncomeSimulator::calc_resident_tax($pdo) +
-      IncomeSimulator::calc_personal_burden_insurance($pdo)
-    ) ;
+    // ユーザーの給与合計（課税・非課税別）を獲得
+    $total_earning = $user->get_anual_earning() ;
+    // ユーザーの給与合計（課税・非課税問わない）を獲得
+    $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
+    // ユーザーの課税給与合計の価格帯を獲得
+    $anual_earning_type = $user->get_anual_earning_type() ;
+    /*
+    ユーザーの手取りを計算
+      手取り = 給与額 - (所得税 + 住民税 + 社会保険料)
+    */
+    $net_income =
+      $total_earning_all - (
+        IncomeSimulator::calc_earning_tax($pdo) +
+        IncomeSimulator::calc_resident_tax($pdo) +
+        array_sum(IncomeSimulator::calc_personal_burden_insurance($pdo))
+      ) ;
+    return $net_income ;
   }
 }
