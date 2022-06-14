@@ -6,8 +6,17 @@ CREATE TABLE users(
   age INT, -- 年齢
   prefecture_id INT, -- 都道府県ID
   dependents_num INT, -- 扶養人数
-  income INT, -- 給与（額面）
   partner_id INT, -- パートナーID
+  PRIMARY KEY (id)
+) ;
+
+DROP TABLE IF EXISTS earnings ;
+CREATE TABLE earnings(
+  id INT NOT NULL AUTO_INCREMENT, -- 給与ID（主キー）
+  name VARCHAR(255) NOT NULL, -- 給与項目名
+  amount INT NOT NULL, -- 給与額
+  is_taxation BOOLEAN NOT NULL, -- 課税 or 非課税（課税ならばtrue）
+  user_id VARCHAR(255) NOT NULL, -- ユーザーID
   PRIMARY KEY (id)
 ) ;
 
