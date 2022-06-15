@@ -47,7 +47,7 @@ class IncomeSimulator
     */
     $earnings_tax =
       $total_earning['課税'] * IncomeSimulator::$income_tax_rate[$anual_earning_type]
-      - IncomeSimulator::$deducation[$anual_earning_type] / 12 ;
+      - (IncomeSimulator::$deducation[$anual_earning_type] / 12) ;
     return $earnings_tax ;
   }
 
