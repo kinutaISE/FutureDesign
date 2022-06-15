@@ -1,32 +1,4 @@
 <?php
-// 都道府県情報が書いてあるファイルを読み込み、配列として返す関数
-function get_prefectures_info($file_name = PREFECTURE_FILENAME)
-{
-  // $lines：行を各要素とした配列
-  $lines = file($file_name, FILE_IGNORE_NEW_LINES) ;
-  // 属性名を取り出す
-  $attributes = explode(',', $lines[0]) ;
-  // 各行をカンマ区切りで分割し、各項目を取り出す
-  /*
-  prefectures_info[1] = [
-    '都道府県ID' => '1',
-    '都道府県名' => '北海道',
-    '健康保険料率' => '0.1039'
-  ] ;
-  */
-  $prefectures_info = [] ;
-  for ($i = 1 ; $i < count($lines) ; $i++) {
-    $data = explode(',', $lines[$i]) ;
-    $prefectures_info[ $data[0] ] = [
-      $attributes[0] => $data[0],
-      $attributes[1] => $data[1],
-      $attributes[2] => $data[2]
-    ] ;
-  }
-  return $prefectures_info ;
-}
-
-
 // パスワードと確認用のパスワードが合致するか（合致する場合はtrueを返す）
 function check_password_matching()
 {
@@ -101,7 +73,7 @@ function regist_user($pdo)
     $stmt->bindValue('email', $email) ;
     $stmt->execute() ;
     $result['message'] = '登録が完了しました' ;
-    $result['link'] = '<a href="login_form.php">ログイン</a>' ;
+    $result['link'] = '<a href="index.php">ログイン</a>' ;
   }
   return $result ;
 }
@@ -126,6 +98,8 @@ function update_user_info($pdo)
   $user_id = $_SESSION['user_id'] ;
   $age = trim( filter_input(INPUT_POST, 'age') ) ;
   $age = ($age === '') ? NULL : $age ;
+  $business_type_id = trim( filter_input(INPUT_POST, 'business_type_id') ) ;
+  $business_type_id = ($business_type_id === '') ? NULL : $business_type_id ;
   $prefecture_id = trim( filter_input(INPUT_POST, 'prefecture_id') ) ;
   $prefecture_id = ($prefecture_id === '') ? NULL : $prefecture_id ;
   $dependents_num = filter_input(INPUT_POST, 'dependents_num') ;
@@ -135,13 +109,15 @@ function update_user_info($pdo)
       users
     SET
       age = :age,
+      business_type_id = :business_type_id,
       prefecture_id = :prefecture_id,
       dependents_num = :dependents_num
     WHERE
       id = :user_id
   ") ;
   $stmt->bindValue('age', $age, PDO::PARAM_INT) ;
-  $stmt->bindValue('prefecture_id', $prefecture_id, PDO::PARAM_INT) ;
+  $stmt->bindValue('business_type_id', $business_type_id, PDO::PARAM_STR) ;
+  $stmt->bindValue('prefecture_id', $prefecture_id, PDO::PARAM_STR) ;
   $stmt->bindValue('dependents_num', $dependents_num, PDO::PARAM_INT) ;
   $stmt->bindValue('user_id', $user_id, PDO::PARAM_STR) ;
   $stmt->execute() ;

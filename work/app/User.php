@@ -6,9 +6,15 @@ class User
   private $password ; // パスワード
   private $email ; // メールアドレス
   private $age ; // 年齢
-  private $dependents_num ; // 扶養人数
+  private $business_type_id ; // 事業種ID
   private $prefecture_id ; // 都道府県ID
+  private $dependents_num ; // 扶養人数
   private $partner_id ; // パートナーID
+  // ユーザーの事業種IDを返す関数
+  public function get_business_type_id()
+  {
+    return $this->business_type_id ;
+  }
   // ユーザーの都道府県IDを返す関数
   public function get_prefecture_id()
   {
