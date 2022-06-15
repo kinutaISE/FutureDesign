@@ -134,11 +134,12 @@ class IncomeSimulator
       - 雇用保険：1/3
       - 労災保険：0
     */
-    $insurance_fee['健康保険'] = $insurance_fee['健康保険'] / 2 ;
-    $insurance_fee['厚生年金'] = $insurance_fee['厚生年金'] / 2 ;
-    $insurance_fee['雇用保険'] = $insurance_fee['雇用保険'] / 3 ;
-    $insurance_fee['労災保険'] = 0 ;
-    return $insurance_fee ;
+    $insurance_fee_personal = [] ;
+    $insurance_fee_personal['健康保険（個人負担）'] = $insurance_fee['健康保険'] / 2 ;
+    $insurance_fee_personal['厚生年金（個人負担）'] = $insurance_fee['厚生年金'] / 2 ;
+    $insurance_fee_personal['雇用保険（個人負担）'] = $insurance_fee['雇用保険'] / 3 ;
+    $insurance_fee_personal['労災保険（個人負担）'] = 0 ;
+    return $insurance_fee_personal ;
   }
 
   // 手取りの計算 /////////////////////////////////////////////////////////////////
@@ -152,25 +153,20 @@ class IncomeSimulator
     $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    // ユーザーの給与合計（課税・非課税別）を獲得
-    $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの給与合計（課税・非課税問わない）を獲得
-    $total_earning_all = $total_earning['課税'] + $total_earning['非課税'] ;
+    $total_earning_all = $user->get_total_earning_all($pdo) ;
     /*
     ユーザーの手取りを計算
       手取り = 給与額 - (所得税 + 住民税 + 社会保険料)
     */
-    $net_income =
-      $total_earning_all - (
-        IncomeSimulator::calc_earning_tax($pdo) +
-        IncomeSimulator::calc_resident_tax($pdo) +
-        array_sum(IncomeSimulator::calc_personal_burden_insurance($pdo))
-      ) ;
+    // 各種税金・社会保険料（個人負担）の合計
+    $total_deducations_personal = array_sum( IncomeSimulator::get_all_deducations_personal($pdo) ) ;
+    $net_income = $total_earning_all - $total_deducations_personal ;
     return $net_income ;
   }
 
-  // 各種税金・社会保険料をまとめる /////////////////////////////////////////////////
-  public static function get_all_deducations($pdo)
+  // 各種税金・社会保険料（個人負担）をまとめる /////////////////////////////////////////////////
+  public static function get_all_deducations_personal($pdo)
   {
     /*
     $all_deducations['所得税']：所得税（整数値）
@@ -180,9 +176,18 @@ class IncomeSimulator
       - $all_deducations['社会保険']['厚生年金']：厚生年金（整数値）
       - $all_deducations['社会保険']['雇用保険']：雇用保険（整数値）
       - $all_deducations['社会保険']['労災保険']：労災保険（整数値）
+    $all_deducations['社会保険（個人負担）']：社会保険料（配列）
+      - $all_deducations['社会保険（個人負担）']['健康保険']：健康保険料（うち個人負担分）（整数値）
+      - $all_deducations['社会保険（個人負担）']['厚生年金']：厚生年金（うち個人負担分）（整数値）
+      - $all_deducations['社会保険（個人負担）']['雇用保険']：雇用保険（うち個人負担分）（整数値）
+      - $all_deducations['社会保険（個人負担）']['労災保険']：労災保険（うち個人負担分）（整数値）
     */
+    $insurance_fee_personal = IncomeSimulator::calc_personal_burden_insurance($pdo) ;
     $all_deducations = [
-
+      '所得税' => IncomeSimulator::calc_earning_tax($pdo),
+      '住民税' => IncomeSimulator::calc_resident_tax($pdo),
     ] ;
+    $all_deducations = array_merge($all_deducations, $insurance_fee_personal) ;
+    return $all_deducations ;
   }
 }
