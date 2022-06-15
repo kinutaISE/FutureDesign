@@ -168,4 +168,21 @@ class IncomeSimulator
       ) ;
     return $net_income ;
   }
+
+  // 各種税金・社会保険料をまとめる /////////////////////////////////////////////////
+  public static function get_all_deducations($pdo)
+  {
+    /*
+    $all_deducations['所得税']：所得税（整数値）
+    $all_deducations['住民税']：住民税（整数値）
+    $all_deducations['社会保険']：社会保険料（配列）
+      - $all_deducations['社会保険']['健康保険']：健康保険料（整数値）
+      - $all_deducations['社会保険']['厚生年金']：厚生年金（整数値）
+      - $all_deducations['社会保険']['雇用保険']：雇用保険（整数値）
+      - $all_deducations['社会保険']['労災保険']：労災保険（整数値）
+    */
+    $all_deducations = [
+
+    ] ;
+  }
 }
