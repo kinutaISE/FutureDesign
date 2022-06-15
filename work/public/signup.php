@@ -28,7 +28,7 @@ include_once('_parts/_header.php') ;
     <button>登録</button>
   </form>
 
-  <p>既に登録済みの方は<a href="login_form.php">こちら</a></p>
+  <p>既に登録済みの方は<a href="index.php">こちら</a></p>
 </body>
 
 <?php

@@ -1,4 +1,32 @@
 <?php
+// 都道府県情報が書いてあるファイルを読み込み、配列として返す関数
+function get_prefectures_info($file_name = PREFECTURE_FILENAME)
+{
+  // $lines：行を各要素とした配列
+  $lines = file($file_name, FILE_IGNORE_NEW_LINES) ;
+  // 属性名を取り出す
+  $attributes = explode(',', $lines[0]) ;
+  // 各行をカンマ区切りで分割し、各項目を取り出す
+  /*
+  prefectures_info[1] = [
+    '都道府県ID' => '1',
+    '都道府県名' => '北海道',
+    '健康保険料率' => '0.1039'
+  ] ;
+  */
+  $prefectures_info = [] ;
+  for ($i = 1 ; $i < count($lines) ; $i++) {
+    $data = explode(',', $lines[$i]) ;
+    $prefectures_info[ $data[0] ] = [
+      $attributes[0] => $data[0],
+      $attributes[1] => $data[1],
+      $attributes[2] => $data[2]
+    ] ;
+  }
+  return $prefectures_info ;
+}
+
+
 // パスワードと確認用のパスワードが合致するか（合致する場合はtrueを返す）
 function check_password_matching()
 {
@@ -167,17 +195,6 @@ function delete_earning_item($pdo)
   $stmt->bindValue('id', $id) ;
   $stmt->execute() ;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-
-// prefectures テーブルの操作//////////////////////////////////////////////////////
-// 全ての都道府県情報を抽出する
-function get_prefectures_info($pdo)
-{
-  $stmt = $pdo->query("SELECT * FROM prefectures") ;
-  return $stmt->fetchAll() ;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 

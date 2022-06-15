@@ -54,8 +54,10 @@ $user = get_user_info($pdo) ;
 $earning_items = get_earning_items($pdo) ;
 // ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
+/*
 // 都道府県のテーブルを獲得
 $prefectures = get_prefectures_info($pdo) ;
+*/
 ?>
 
 
@@ -72,9 +74,9 @@ $prefectures = get_prefectures_info($pdo) ;
     <br>
     勤務地（都道府県）：
     <select name="prefecture_id">
-      <?php foreach ($prefectures as $prefecture):?>
-        <option value="<?= $prefecture->id ?>" <?= ($user->prefecture_id === $prefecture->id) ? 'selected' : '' ; ?> >
-          <?= ($prefecture->name === '') ? $prefecture_names[$prefecture->id - 1] : $prefecture_name ;?>
+      <?php foreach ($prefectures_info as $prefecture_info):?>
+        <option value="<?= $prefecture_info['都道府県ID'] ?>" <?= ($user->prefecture_id === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
+          <?= $prefecture_info['都道府県名'] ;?>
         </option>
       <?php endforeach ;?>
     </select>
