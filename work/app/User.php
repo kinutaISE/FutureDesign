@@ -32,10 +32,11 @@ class User
     // 課税・非課税別に合計を算出
     foreach ($earning_items as $earning_item) {
       $key = ($earning_item->is_taxation) ? '課税' : '非課税' ;
-      $total[$key] = $earning_item->amount ;
+      $total[$key] += $earning_item->amount ;
     }
     return $total ;
   }
+  // ユーザーの年収価格帯を返す関数
   public function get_anual_earning_type($pdo)
   {
     /*
@@ -62,5 +63,17 @@ class User
     else if ($assumed_anual_earning['課税'] <= 40000000)
       return 'range_6' ;
     return 'range_7' ;
+  }
+  // 課税・非課税を問わない、ユーザーの給与合計を返す
+  public function get_total_earning_all($pdo)
+  {
+    // ユーザーの給与項目を抽出
+    $earning_items = $this->get_earning_items($pdo) ;
+    // $totalは合計値
+    $total = 0 ;
+    // 課税・非課税別に合計を算出
+    foreach ($earning_items as $earning_item)
+      $total += $earning_item->amount ;
+    return $total ;
   }
 }
