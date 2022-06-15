@@ -72,10 +72,19 @@ $prefectures = get_prefectures_info($pdo) ;
     <h2>基本情報</h2>
     年齢：<input type="number" name="age" value="<?= $user->age ;?>" placeholder="年齢を記入してください">
     <br>
+    事業種：
+    <select name="business_type_id">
+      <?php foreach ($business_types_info as $business_type_info):?>
+        <option value="<?= $business_type_info['事業種ID'] ;?>" <?= ($user->business_type_id === $business_type_info['事業種ID']) ? 'selected' : '' ; ?> >
+          <?= $business_type_info['事業種名'] ;?>
+        </option>
+      <?php endforeach ;?>
+    </select>
+    <br>
     勤務地（都道府県）：
     <select name="prefecture_id">
       <?php foreach ($prefectures_info as $prefecture_info):?>
-        <option value="<?= $prefecture_info['都道府県ID'] ?>" <?= ($user->prefecture_id === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
+        <option value="<?= $prefecture_info['都道府県ID'] ;?>" <?= ($user->prefecture_id === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
           <?= $prefecture_info['都道府県名'] ;?>
         </option>
       <?php endforeach ;?>

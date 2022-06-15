@@ -111,13 +111,14 @@ class IncomeSimulator
       - 現状、一般の事業として計算をする（ユーザーの事業形態のオプションも未設定）
      - 労災保険 = 標準報酬月額 * 労災保険料率
       - 雇用保険料率は事業の種類（卸売、林業などなど）で異なる（労災保険率表にて公開されている）
-      - 現状、「その他各種事業」(3%) として計算する
     */
+    global $prefectures_info ;
+    global $business_types_info ;
     $insurance_fee = [
-      '健康保険' => $total_earning_all * $prefecture->health_insurance_rate,
+      '健康保険' => $total_earning_all * $prefectures_info[$user->get_prefecture_id()]['健康保険料率'],
       '厚生年金' => $total_earning_all * RATIO_WALFARE_PENSION,
-      '雇用保険' => $total_earning_all * RATIO_EMPLOYEE,
-      '労災保険' => $total_earning_all * RATIO_ACCIDENT
+      '雇用保険' => $total_earning_all * ($business_types_info[$user->get_business_type_id()]['雇用保険料率（労働者負担）'] + $business_types_info[$user->get_business_type_id()]['雇用保険料率（事業主負担）']),
+      '労災保険' => $total_earning_all * ($business_types_info[$user->get_business_type_id()]['労災保険料率（労働者負担）'] + $business_types_info[$user->get_business_type_id()]['労災保険料率（事業主負担）']),
     ] ;
     return $insurance_fee ;
   }
@@ -171,11 +172,6 @@ class IncomeSimulator
     /*
     $all_deducations['所得税']：所得税（整数値）
     $all_deducations['住民税']：住民税（整数値）
-    $all_deducations['社会保険']：社会保険料（配列）
-      - $all_deducations['社会保険']['健康保険']：健康保険料（整数値）
-      - $all_deducations['社会保険']['厚生年金']：厚生年金（整数値）
-      - $all_deducations['社会保険']['雇用保険']：雇用保険（整数値）
-      - $all_deducations['社会保険']['労災保険']：労災保険（整数値）
     $all_deducations['社会保険（個人負担）']：社会保険料（配列）
       - $all_deducations['社会保険（個人負担）']['健康保険']：健康保険料（うち個人負担分）（整数値）
       - $all_deducations['社会保険（個人負担）']['厚生年金']：厚生年金（うち個人負担分）（整数値）

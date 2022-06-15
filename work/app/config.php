@@ -6,7 +6,8 @@ define('DNS', 'mysql:host=db;dbname=myapp;charset=utf8mb4') ;
 define('DB_USER', 'myappuser') ;
 define('DB_PASS', 'myapppass') ;
 define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST']) ;
-define('PREFECTURE_FILENAME', __DIR__ . '/data/prefectures.csv') ;
+define('PREFECTURES_FILENAME', __DIR__ . '/data/prefectures.csv') ;
+define('BUSINESS_TYPES_FILENAME', __DIR__ . '/data/business_types.csv') ;
 
 $anual_income_type_names = [
   '195万円以下',
@@ -18,10 +19,12 @@ $anual_income_type_names = [
   '4,000万円超'
 ] ;
 
+require_once(__DIR__ . '/functions_initialization.php') ;
+$prefectures_info = get_prefectures_info() ;
+$business_types_info = get_business_types_info() ;
+
 require_once(__DIR__ . '/Database.php') ;
 require_once(__DIR__ . '/User.php') ;
 require_once(__DIR__ . '/EarningItem.php') ;
 require_once(__DIR__ . '/IncomeSimulator.php') ;
 require_once(__DIR__ . '/functions.php') ;
-
-$prefectures_info = get_prefectures_info() ;
