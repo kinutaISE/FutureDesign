@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS pre_users ;
+CREATE TABLE pre_users (
+  id VARCHAR(255) NOT NULL, -- 仮登録ユーザーID（主キー）
+  urltoken VARCHAR(255) NOT NULL, -- トークン
+  email VARCHAR(255) NOT NULL, -- メールアドレス
+  register_date DATETIME NOT NULL, -- 仮登録日時
+  PRIMARY KEY (id)
+) ;
+
 DROP TABLE IF EXISTS users ;
 CREATE TABLE users(
   id VARCHAR(255) NOT NULL, -- ユーザーID（主キー）
