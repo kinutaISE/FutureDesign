@@ -1,31 +1,6 @@
 <?php
-
-define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率（うち 1/2 個人負担）
-define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率（うち 1/3 個人負担）
-define('RATIO_ACCIDENT', 0.03) ; // 労災保険の保険料率（会社が全額負担）
-
 class IncomeSimulator
 {
-  // 所得税率
-  private static $income_tax_rate = [
-    'range_1' => 0.05,
-    'range_2' => 0.1,
-    'range_3' => 0.2,
-    'range_4' => 0.23,
-    'range_5' => 0.33,
-    'range_6' => 0.4,
-    'range_7' => 0.44
-  ] ;
-  // 控除額
-  private static $deducation = [
-    'range_1' => 0,
-    'range_2' => 97500,
-    'range_3' => 427500,
-    'range_4' => 636000,
-    'range_5' => 1536000,
-    'range_6' => 2796000,
-    'range_7' => 4796000
-  ] ;
   // 所得税の計算 //////////////////////////////////////////////////
   public static function calc_earning_tax($pdo)
   {
@@ -41,14 +16,16 @@ class IncomeSimulator
     $total_earning = $user->get_total_earning($pdo) ;
     // ユーザーの課税給与合計の価格帯を獲得
     $anual_earning_type = $user->get_anual_earning_type($pdo) ;
+    // 所得税の情報をもつグローバル変数を使用する宣言
+    global $earning_tax_info ;
     /*
       所得税を返す
       所得税 = 課税所得金額 * 税率 - (税額控除額 / 12)
     */
-    $earnings_tax =
-      $total_earning['課税'] * IncomeSimulator::$income_tax_rate[$anual_earning_type]
-      - (IncomeSimulator::$deducation[$anual_earning_type] / 12) ;
-    return $earnings_tax ;
+    $earning_tax =
+      $total_earning['課税'] * $earning_tax_info[$anual_earning_type]['税率']
+      - ($earning_tax_info[$anual_earning_type]['税額控除額'] / 12) ;
+    return $earning_tax ;
   }
 
   // 住民税の計算 //////////////////////////////////////////////////
@@ -108,7 +85,6 @@ class IncomeSimulator
       - 現状、標準報酬月額 = 課税所得金額 + 非課税所得金額 と仮定する（要勉強）
      - 雇用保険 = 標準報酬月額 * 雇用保険料率
       - 雇用保険料率は事業の種類（一般 / 農林水産・清酒製造 / 建設）で異なる
-      - 現状、一般の事業として計算をする（ユーザーの事業形態のオプションも未設定）
      - 労災保険 = 標準報酬月額 * 労災保険料率
       - 雇用保険料率は事業の種類（卸売、林業などなど）で異なる（労災保険率表にて公開されている）
     */
