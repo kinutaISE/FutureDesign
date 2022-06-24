@@ -86,4 +86,10 @@ class User
       $total += $earning_item->amount ;
     return $total ;
   }
+  // ユーザーの支出項目を抽出する
+  public function get_cost_items($pdo)
+  {
+    // ユーザーの支出項目を抽出する
+    
+  }
 }
