@@ -10,6 +10,11 @@ class User
   private $prefecture_id ; // 都道府県ID
   private $dependents_num ; // 扶養人数
   private $partner_id ; // パートナーID
+  // ユーザーIDを返す関数
+  public function get_id()
+  {
+    return $this->id ;
+  }
   // ユーザーの事業種IDを返す関数
   public function get_business_type_id()
   {
@@ -90,6 +95,10 @@ class User
   public function get_cost_items($pdo)
   {
     // ユーザーの支出項目を抽出する
-    
+    $stmt = $pdo->prepare("SELECT * FROM cost_items WHERE user_id = :user_id") ;
+    $stmt->bindValue('user_id', $this->id) ;
+    $stmt->execute() ;
+    $cost_items = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
+    return $cost_items ;
   }
 }

@@ -17,14 +17,19 @@ class SavingSimulator
   public static function calc_total_cost($pdo)
   {
     // ユーザーIDを取得する
-    $user_id = filter_input(INPUT_POST, 'user_id') ;
+    $user_id = $_SESSION['user_id'] ;
     // ユーザー情報を抽出
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
     $stmt->bindValue('user_id', $user_id) ;
     $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
     $stmt->execute() ;
     $user = $stmt->fetch() ;
-    //
-
+    // ユーザーの支出項目を全て取得する
+    $cost_items = $user->get_cost_items($pdo) ;
+    // 合計金額を求め、返す
+    $total_cost = 0 ;
+    foreach ($cost_items as $cost_item)
+      $total_cost += $cost_item['value'] ;
+    return $total_cost ;
   }
 }

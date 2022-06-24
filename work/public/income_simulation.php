@@ -18,6 +18,9 @@ $all_deducations_personal = IncomeSimulator::get_all_deducations_personal($pdo) 
   <?php endforeach ; ?>
   </ul>
 
+  <p>支出総額：<?= number_format( SavingSimulator::calc_total_cost($pdo) ) . '円' ;?></p>
+
+  <p>貯蓄額：<?= number_format( SavingSimulator::calc_monthly_saving($pdo) ) . '円' ;?></p>
 
   <p><a href="mypage.php">戻る</a></p>
 </body>
