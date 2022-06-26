@@ -26,6 +26,7 @@ CREATE TABLE earnings(
   name VARCHAR(255) NOT NULL, -- 給与項目名
   amount INT NOT NULL, -- 給与額
   is_taxation BOOLEAN NOT NULL, -- 課税 or 非課税（課税ならばtrue）
+  frequency VARCHAR(255) NOT NULL, -- 頻度（例：1 days, 3 months, 1 years etc.）
   user_id VARCHAR(255) NOT NULL, -- ユーザーID
   PRIMARY KEY (id)
 ) ;

@@ -149,15 +149,19 @@ function add_earning_item($pdo)
   $name = trim(filter_input(INPUT_POST, 'earning_item_name')) ;
   $amount = trim(filter_input(INPUT_POST, 'earning_item_amount')) ;
   $is_taxation = trim(filter_input(INPUT_POST, 'earning_item_is_taxation')) ;
+  $frequency_number = trim(filter_input(INPUT_POST, 'frequency_number')) ;
+  $frequency =
+    $frequency_number . ' ' . filter_input(INPUT_POST, 'frequency_unit') ;
   if ($name === '' || $amount === '' || $is_taxation === '')
     return ;
   $stmt = $pdo->prepare("
-    INSERT INTO earnings (name, amount, is_taxation, user_id)
-    VALUES (:name, :amount, :is_taxation, :user_id)
+    INSERT INTO earnings (name, amount, is_taxation, frequency, user_id)
+    VALUES (:name, :amount, :is_taxation, :frequency, :user_id)
   ") ;
   $stmt->bindValue('name', $name) ;
   $stmt->bindValue('amount', $amount) ;
   $stmt->bindValue('is_taxation', $is_taxation) ;
+  $stmt->bindValue('frequency', $frequency) ;
   $stmt->bindValue('user_id', $user_id) ;
   $stmt->execute() ;
 }
