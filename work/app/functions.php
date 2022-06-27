@@ -1,4 +1,33 @@
 <?php
+/*
+以下 3 つの関数はほとんど処理が同じであるため、後々以下の関数を実装することを検討：
+function set_file_info($file_name)
+  - 引数：
+    - $file_name：csv ファイル名
+  - 処理：
+    - 属性名（ファイルの先頭行の各項目）をキーとした配列を要素としてもつ配列を返す
+    - 出力する配列を $array とする
+    - $array の i 番目の要素は以下のようになる想定：
+      $array[レコード i + 1 の'属性名1'] = [
+        '属性名1' => レコード i + 1 の'属性名1',
+        '属性名2' => レコード i + 1 の'属性名2',
+        ...
+      ]
+*/
+function set_file_info($filename)
+{
+  //行を各要素とした配列
+  $lines = file($filename, FILE_IGNORE_NEW_LINES) ;
+  //コンマ区切りで分割し，属性名を取り出す
+  $attributes = explode(",", $lines[0]);
+
+  $data_info = [] ;
+  for($i = 1; $i < count($lines); $i++) {
+    $data = explode(',', $lines[$i]) ;
+    $data_info[ $data[0] ] = array_combine($attributes, $data) ;
+  }
+  return $data_info ;
+}
 // パスワードと確認用のパスワードが合致するか（合致する場合はtrueを返す）
 function check_password_matching()
 {
