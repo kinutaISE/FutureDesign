@@ -118,6 +118,17 @@ $prefectures = get_prefectures_info($pdo) ;
       <label>
         <input type="radio" name="earning_item_is_taxation" value="0">非課税
       </label>
+      <!-- 頻度（日、週、月、年） -->
+      <div class="frequency_form">
+        <input type="number" name="frequency_number"> <!-- 頻度の数値 -->
+        <select name="frequency_unit"> <!-- 頻度の単位 -->
+          <option value="days">日</option>
+          <option value="weeks">週間</option>
+          <option value="months">ヶ月</option>
+          <option value="years">年</option>
+        </select>
+        に一度発生
+      </div>
       <button>追加</button>
     </form>
     <!-- 給与の一覧 -->
