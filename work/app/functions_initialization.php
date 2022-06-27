@@ -14,6 +14,20 @@ function set_file_info($file_name)
         ...
       ]
 */
+function set_file_info($filename)
+{
+  //行を各要素とした配列
+  $lines = file($filename, FILE_IGNORE_NEW_LINES) ;
+  //コンマ区切りで分割し，属性名を取り出す
+  $attributes = explode(",", $lines[0]);
+
+  $data_info = [] ;
+  for($i = 1; $i < count($lines); $i++) {
+    $data = explode(',', $lines[$i]) ;
+    $data_info[ $data[0] ] = array_combine($attributes, $data) ;
+  }
+  return $data_info ;
+}
 // 都道府県情報が書いてあるファイルを読み込み、配列として返す関数
 function get_prefectures_info($file_name = PREFECTURES_FILENAME)
 {

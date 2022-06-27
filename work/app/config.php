@@ -22,9 +22,9 @@ $anual_income_type_names = [
 
 require_once(__DIR__ . '/functions_initialization.php') ;
 
-$prefectures_info = get_prefectures_info() ; // 都道府県の情報（都道府県ID, ）
-$business_types_info = get_business_types_info() ; // 事業種の情報
-$earning_tax_info = get_earning_tax_info() ; // 所得税の情報
+$prefectures_info = set_file_info( PREFECTURES_FILENAME ) ; // 都道府県の情報（都道府県ID, ）
+$business_types_info = set_file_info( BUSINESS_TYPES_FILENAME ) ; // 事業種の情報
+$earning_tax_info = set_file_info( EARNING_TAX_FILENAME ) ; // 所得税の情報
 define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率
 define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率
 define('RATIO_ACCIDENT', 0.03) ; // 労災保険の保険料率
