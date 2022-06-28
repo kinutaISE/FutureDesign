@@ -152,6 +152,17 @@ $prefectures = get_prefectures_info($pdo) ;
     <form method="post" action="?action=add_cost_item">
       <input type="text" name="cost_item_name" placeholder="支出の項目名を記入してください">
       <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
+      <!-- 頻度（日、週、月、年） -->
+      <div class="frequency_form">
+        <input type="number" name="frequency_number"> <!-- 頻度の数値 -->
+        <select name="frequency_unit"> <!-- 頻度の単位 -->
+          <option value="days">日</option>
+          <option value="weeks">週間</option>
+          <option value="months">ヶ月</option>
+          <option value="years">年</option>
+        </select>
+        に一度発生
+      </div>
       <button>追加</button>
     </form>
     <!-- 支出項目の一覧 -->
