@@ -228,15 +228,19 @@ function add_cost_item($pdo)
   // 対象：cost_items
   $name = trim( filter_input(INPUT_POST, 'cost_item_name') ) ;
   $value = trim( filter_input(INPUT_POST, 'cost_item_value') ) ;
+  $frequency_number = trim( filter_input(INPUT_POST, 'frequency_number') ) ;
+  $frequency =
+    $frequency_number . ' ' . filter_input(INPUT_POST, 'frequency_unit') ;
   $user_id = $_SESSION['user_id'] ;
   if ($name === '' || $value === '')
     return ;
   $stmt = $pdo->prepare("
-    INSERT INTO cost_items (name, value, user_id)
-    VALUES (:name, :value, :user_id)
+    INSERT INTO cost_items (name, value, user_id, frequency)
+    VALUES (:name, :value, :user_id, :frequency)
   ") ;
   $stmt->bindValue('name', $name, PDO::PARAM_STR) ;
   $stmt->bindValue('value', $value, PDO::PARAM_INT) ;
+  $stmt->bindValue('frequency', $frequency, PDO::PARAM_STR) ;
   $stmt->bindValue('user_id', $user_id, PDO::PARAM_STR) ;
   $stmt->execute() ;
 }
