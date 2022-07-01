@@ -70,7 +70,35 @@ $prefectures = get_prefectures_info($pdo) ;
   <form method="post" action="?action=update_user_info">
     <!-- 基本情報 -->
     <h2>基本情報</h2>
-    年齢：<input type="number" name="age" value="<?= $user->age ;?>" placeholder="年齢を記入してください">
+    生年月日：
+    <!-- 年 -->
+    <select name="birth_year">
+      <?php for ($year = 1965 ; $year <= date('Y') ; $year++):?>
+        <option value="<?= $year ;?>" <?= ($user->birth_year === $year) ? 'selected' : '' ; ?>>
+          <?= $year ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    年
+    <!-- 月 -->
+    <select name="birth_month">
+      <?php for ($month = 1 ; $month <= 12 ; $month++):?>
+        <option value="<?= $month ;?>" <?= ($user->birth_month === $month) ? 'selected' : '' ; ?>>
+          <?= $month ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    月
+    <!-- 日 -->
+    <select name="birth_date">
+      <?php for ($date = 1 ; $date <= 31 ; $date++):?>
+        <option value="<?= $date ;?>" <?= ($user->birth_date === $date) ? 'selected' : '' ; ?>>
+          <?= $date ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    日
+
     <br>
     事業種：
     <select name="business_type_id">

@@ -5,7 +5,9 @@ class User
   private $id ; // ユーザーID
   private $password ; // パスワード
   private $email ; // メールアドレス
-  private $age ; // 年齢
+  private $birth_year ; // 生年月日（年）
+  private $birth_month ; // 生年月日（月）
+  private $birth_date ; // 生年月日（日）
   private $business_type_id ; // 事業種ID
   private $prefecture_id ; // 都道府県ID
   private $dependents_num ; // 扶養人数

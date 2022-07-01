@@ -125,8 +125,10 @@ function update_user_info($pdo)
   // 操作：ユーザー情報の更新
   // 対象：users
   $user_id = $_SESSION['user_id'] ;
-  $age = trim( filter_input(INPUT_POST, 'age') ) ;
-  $age = ($age === '') ? NULL : $age ;
+
+  $birth_year = filter_input(INPUT_POST, 'birth_year') ;
+  $birth_month = filter_input(INPUT_POST, 'birth_month') ;
+  $birth_date = filter_input(INPUT_POST, 'birth_date') ;
   $business_type_id = trim( filter_input(INPUT_POST, 'business_type_id') ) ;
   $business_type_id = ($business_type_id === '') ? NULL : $business_type_id ;
   $prefecture_id = trim( filter_input(INPUT_POST, 'prefecture_id') ) ;
@@ -137,14 +139,18 @@ function update_user_info($pdo)
     UPDATE
       users
     SET
-      age = :age,
+      birth_year = :birth_year,
+      birth_month = :birth_month,
+      birth_date = :birth_date,
       business_type_id = :business_type_id,
       prefecture_id = :prefecture_id,
       dependents_num = :dependents_num
     WHERE
       id = :user_id
   ") ;
-  $stmt->bindValue('age', $age, PDO::PARAM_INT) ;
+  $stmt->bindValue('birth_year', $birth_year, PDO::PARAM_INT) ;
+  $stmt->bindValue('birth_month', $birth_month, PDO::PARAM_INT) ;
+  $stmt->bindValue('birth_date', $birth_date, PDO::PARAM_INT) ;
   $stmt->bindValue('business_type_id', $business_type_id, PDO::PARAM_STR) ;
   $stmt->bindValue('prefecture_id', $prefecture_id, PDO::PARAM_STR) ;
   $stmt->bindValue('dependents_num', $dependents_num, PDO::PARAM_INT) ;
