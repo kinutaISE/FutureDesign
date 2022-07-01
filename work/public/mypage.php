@@ -74,7 +74,7 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 年 -->
     <select name="birth_year">
       <?php for ($year = 1965 ; $year <= date('Y') ; $year++):?>
-        <option value="<?= $year ;?>" <?= ($user->get_birth_year() == $year) ? 'selected' : '' ; ?>>
+        <option value="<?= $year ;?>" <?= ($user->get_birth_year() == $year) ? 'selected' : '' ;?>>
           <?= $year ;?>
         </option>
       <?php endfor ;?>
@@ -92,7 +92,7 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 日 -->
     <select name="birth_date">
       <?php for ($date = 1 ; $date <= 31 ; $date++):?>
-        <option value="<?= $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ; ?>>
+        <option value="<?= $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ;?>>
           <?= $date ;?>
         </option>
       <?php endfor ;?>
