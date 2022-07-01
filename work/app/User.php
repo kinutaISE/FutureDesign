@@ -5,7 +5,7 @@ class User
   private $id ; // ユーザーID
   private $password ; // パスワード
   private $email ; // メールアドレス
-  private $age ; // 年齢
+  private $date_of_birth ; // 生年月日
   private $business_type_id ; // 事業種ID
   private $prefecture_id ; // 都道府県ID
   private $dependents_num ; // 扶養人数
@@ -14,6 +14,24 @@ class User
   public function get_id()
   {
     return $this->id ;
+  }
+  // ユーザーの生年月日（年）を返す関数
+  public function get_birth_year()
+  {
+    $dob_splited = explode('/', $this->date_of_birth) ;
+    return ( ($this->date_of_birth !== NULL) ? $dob_splited[0] : NULL ) ;
+  }
+  // ユーザーの生年月日（月）を返す関数
+  public function get_birth_month()
+  {
+    $dob_splited = explode('/', $this->date_of_birth) ;
+    return ( ($this->date_of_birth !== NULL) ? $dob_splited[1] : NULL ) ;
+  }
+  // ユーザーの生年月日（日）を返す関数
+  public function get_birth_date()
+  {
+    $dob_splited = explode('/', $this->date_of_birth) ;
+    return ( ($this->date_of_birth !== NULL) ? $dob_splited[2] : NULL ) ;
   }
   // ユーザーの事業種IDを返す関数
   public function get_business_type_id()
@@ -24,6 +42,11 @@ class User
   public function get_prefecture_id()
   {
     return $this->prefecture_id ;
+  }
+  // ユーザーの扶養人数を返す関数
+  public function get_dependents_num()
+  {
+    return $this->dependents_num ;
   }
   // ユーザーの給与項目を抽出する関数
   public function get_earning_items($pdo)

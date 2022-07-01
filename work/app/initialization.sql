@@ -12,7 +12,7 @@ CREATE TABLE users(
   id VARCHAR(255) NOT NULL, -- ユーザーID（主キー）
   password VARCHAR(255) NOT NULL, -- パスワード
   email VARCHAR(255) NOT NULL, -- メールアドレス
-  age INT, -- 年齢
+  date_of_birth VARCHAR(255), -- 生年月日
   business_type_id VARCHAR(255), -- 事業種ID
   prefecture_id VARCHAR(255), -- 都道府県ID
   dependents_num INT, -- 扶養人数

@@ -70,12 +70,40 @@ $prefectures = get_prefectures_info($pdo) ;
   <form method="post" action="?action=update_user_info">
     <!-- 基本情報 -->
     <h2>基本情報</h2>
-    年齢：<input type="number" name="age" value="<?= $user->age ;?>" placeholder="年齢を記入してください">
+    生年月日：
+    <!-- 年 -->
+    <select name="birth_year">
+      <?php for ($year = 1965 ; $year <= date('Y') ; $year++):?>
+        <option value="<?= $year ;?>" <?= ($user->get_birth_year() == $year) ? 'selected' : '' ; ?>>
+          <?= $year ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    年
+    <!-- 月 -->
+    <select name="birth_month">
+      <?php for ($month = 1 ; $month <= 12 ; $month++):?>
+        <option value="<?= $month ;?>" <?= ($user->get_birth_month() == $month) ? 'selected' : '' ; ?>>
+          <?= $month ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    月
+    <!-- 日 -->
+    <select name="birth_date">
+      <?php for ($date = 1 ; $date <= 31 ; $date++):?>
+        <option value="<?= $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ; ?>>
+          <?= $date ;?>
+        </option>
+      <?php endfor ;?>
+    </select>
+    日
+
     <br>
     事業種：
     <select name="business_type_id">
       <?php foreach ($business_types_info as $business_type_info):?>
-        <option value="<?= $business_type_info['事業種ID'] ;?>" <?= ($user->business_type_id === $business_type_info['事業種ID']) ? 'selected' : '' ; ?> >
+        <option value="<?= $business_type_info['事業種ID'] ;?>" <?= ($user->get_business_type_id() === $business_type_info['事業種ID']) ? 'selected' : '' ; ?> >
           <?= $business_type_info['事業種名'] ;?>
         </option>
       <?php endforeach ;?>
@@ -84,7 +112,7 @@ $prefectures = get_prefectures_info($pdo) ;
     勤務地（都道府県）：
     <select name="prefecture_id">
       <?php foreach ($prefectures_info as $prefecture_info):?>
-        <option value="<?= $prefecture_info['都道府県ID'] ;?>" <?= ($user->prefecture_id === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
+        <option value="<?= $prefecture_info['都道府県ID'] ;?>" <?= ($user->get_prefecture_id() === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
           <?= $prefecture_info['都道府県名'] ;?>
         </option>
       <?php endforeach ;?>
@@ -93,7 +121,7 @@ $prefectures = get_prefectures_info($pdo) ;
     扶養人数：
     <select name="dependents_num">
       <?php for ($i = 0 ; $i <= 10 ; $i++) :?>
-        <option value="<?= $i ;?>" <?= ($user->dependents_num === $i) ? 'selected' : '' ?>>
+        <option value="<?= $i ;?>" <?= ($user->get_dependents_num() === $i) ? 'selected' : '' ?>>
           <?= $i ;?>人
         </option>
       <?php endfor ;?>
