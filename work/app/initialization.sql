@@ -44,6 +44,7 @@ CREATE TABLE cost_items(
   id INT NOT NULL AUTO_INCREMENT, -- 支出項目ID（主キー）
   name VARCHAR(255) NOT NULL, -- 支出項目名
   value INT NOT NULL, -- 支出額
+  term VARCHAR(255) NOT NULL, -- 発生期間（constant or YYYY/MM~YYYY/MM ）
   frequency VARCHAR(255) NOT NULL, -- 頻度（例：1 days, 3 months, 1 years etc.）
   user_id VARCHAR(255) NOT NULL, -- ユーザーID
   PRIMARY KEY (id)
