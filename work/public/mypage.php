@@ -180,6 +180,37 @@ $prefectures = get_prefectures_info($pdo) ;
     <form method="post" action="?action=add_cost_item">
       <input type="text" name="cost_item_name" placeholder="支出の項目名を記入してください">
       <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
+      <!-- 発生する期間 -->
+      <div>
+        <!-- 常に必要となる支出かどうか -->
+        <input type="checkbox" name="is_constant" value="constant">常にかかる支出
+        <br>
+        <!-- 期間の選択 -->
+        <select name="term_start_year">
+          <?php for ($year = date('Y') ; $year <= date('Y') + 50 ; $year++):?>
+            <option value="<?= $year ;?>"> <?= $year ;?> </option>
+          <?php endfor ;?>
+        </select>
+        年
+        <select name="term_start_month">
+          <?php for ($month = 1 ; $month <= 12 ; $month++):?>
+            <option value="<?= $month ;?>"> <?= $month ;?> </option>
+          <?php endfor ;?>
+        </select>
+        月〜
+        <select name="term_finish_year">
+          <?php for ($year = date('Y') ; $year <= date('Y') + 50 ; $year++):?>
+            <option value="<?= $year ;?>"> <?= $year ;?> </option>
+          <?php endfor ;?>
+        </select>
+        年
+        <select name="term_finish_month">
+          <?php for ($month = 1 ; $month <= 12 ; $month++):?>
+            <option value="<?= $month ;?>"> <?= $month ;?> </option>
+          <?php endfor ;?>
+        </select>
+        月
+      </div>
       <!-- 頻度（日、週、月、年） -->
       <div class="frequency_form">
         <input type="number" name="frequency_number"> <!-- 頻度の数値 -->

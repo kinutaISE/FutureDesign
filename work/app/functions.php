@@ -233,6 +233,13 @@ function add_cost_item($pdo)
   // 対象：cost_items
   $name = trim( filter_input(INPUT_POST, 'cost_item_name') ) ;
   $value = trim( filter_input(INPUT_POST, 'cost_item_value') ) ;
+  $is_constant = filter_input(INPUT_POST, 'is_constant') ;
+  $term_start =
+    filter_input(INPUT_POST, 'term_start_year') . '/' . filter_input(INPUT_POST, 'term_start_month') ;
+  $term_finish =
+    filter_input(INPUT_POST, 'term_finish_year') . '/' . filter_input(INPUT_POST, 'term_finish_month') ;
+  $term = ($is_constant) ?
+    'constant' : $term_start . '~' . $term_finish ;
   $frequency_number = trim( filter_input(INPUT_POST, 'frequency_number') ) ;
   $frequency =
     $frequency_number . ' ' . filter_input(INPUT_POST, 'frequency_unit') ;
@@ -240,11 +247,12 @@ function add_cost_item($pdo)
   if ($name === '' || $value === '')
     return ;
   $stmt = $pdo->prepare("
-    INSERT INTO cost_items (name, value, user_id, frequency)
-    VALUES (:name, :value, :user_id, :frequency)
+    INSERT INTO cost_items (name, value, user_id, term, frequency)
+    VALUES (:name, :value, :user_id, :term, :frequency)
   ") ;
   $stmt->bindValue('name', $name, PDO::PARAM_STR) ;
   $stmt->bindValue('value', $value, PDO::PARAM_INT) ;
+  $stmt->bindValue('term', $term, PDO::PARAM_STR) ;
   $stmt->bindValue('frequency', $frequency, PDO::PARAM_STR) ;
   $stmt->bindValue('user_id', $user_id, PDO::PARAM_STR) ;
   $stmt->execute() ;
