@@ -38,6 +38,13 @@ class User
     $dob_splited = explode('-', $this->date_of_birth) ;
     return ( ($this->date_of_birth !== NULL) ? $dob_splited[2] : NULL ) ;
   }
+  // ユーザーの年齢を返す関数
+  public function get_age()
+  {
+    $date = new DateTime($this->date_of_birth) ;
+    $now = new DateTime() ;
+    return $now->diff($date)->y ;
+  }
   // ユーザーが定年を迎える西暦を返す関数
   public function get_retirement_year()
   {
