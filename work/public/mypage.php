@@ -83,7 +83,7 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 月 -->
     <select name="birth_month">
       <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-        <option value="<?= $month ;?>" <?= ($user->get_birth_month() == $month) ? 'selected' : '' ; ?>>
+        <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>" <?= ($user->get_birth_month() == $month) ? 'selected' : '' ; ?>>
           <?= $month ;?>
         </option>
       <?php endfor ;?>
@@ -92,7 +92,7 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 日 -->
     <select name="birth_date">
       <?php for ($date = 1 ; $date <= 31 ; $date++):?>
-        <option value="<?= $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ;?>>
+        <option value="<?= ( ($date < 10) ? 0 : '' ) . $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ;?>>
           <?= $date ;?>
         </option>
       <?php endfor ;?>
@@ -194,7 +194,7 @@ $prefectures = get_prefectures_info($pdo) ;
         年
         <select name="term_start_month">
           <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-            <option value="<?= $month ;?>"> <?= $month ;?> </option>
+            <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>"> <?= $month ;?> </option>
           <?php endfor ;?>
         </select>
         月〜
@@ -206,7 +206,7 @@ $prefectures = get_prefectures_info($pdo) ;
         年
         <select name="term_finish_month">
           <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-            <option value="<?= $month ;?>"> <?= $month ;?> </option>
+            <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>"> <?= $month ;?> </option>
           <?php endfor ;?>
         </select>
         月
@@ -239,6 +239,8 @@ $prefectures = get_prefectures_info($pdo) ;
   </div>
   <!-- 収入シミュレーションへのリンク -->
   <p><a href="income_simulation.php">収入のシミュレーションを行う</a></p>
+  <!-- 貯蓄シミュレーションへのリンク -->
+  <p><a href="saving_simulation.php">貯蓄のシミュレーションを行う</a></p>
 </body>
 
 <?php

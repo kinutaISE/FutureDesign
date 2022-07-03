@@ -15,23 +15,37 @@ class User
   {
     return $this->id ;
   }
+  // ユーザーの生年月日を返す関数
+  public function get_date_of_birth()
+  {
+    return $this->date_of_birth ;
+  }
   // ユーザーの生年月日（年）を返す関数
   public function get_birth_year()
   {
-    $dob_splited = explode('/', $this->date_of_birth) ;
+    $dob_splited = explode('-', $this->date_of_birth) ;
     return ( ($this->date_of_birth !== NULL) ? $dob_splited[0] : NULL ) ;
   }
   // ユーザーの生年月日（月）を返す関数
   public function get_birth_month()
   {
-    $dob_splited = explode('/', $this->date_of_birth) ;
+    $dob_splited = explode('-', $this->date_of_birth) ;
     return ( ($this->date_of_birth !== NULL) ? $dob_splited[1] : NULL ) ;
   }
   // ユーザーの生年月日（日）を返す関数
   public function get_birth_date()
   {
-    $dob_splited = explode('/', $this->date_of_birth) ;
+    $dob_splited = explode('-', $this->date_of_birth) ;
     return ( ($this->date_of_birth !== NULL) ? $dob_splited[2] : NULL ) ;
+  }
+  // ユーザーが定年を迎える西暦を返す関数
+  public function get_retirement_year()
+  {
+    $date = new DateTime($this->date_of_birth) ;
+    $now = new DateTime() ;
+    $diff = $now->diff($date) ;
+    $retirement_year = date('Y') + (65 - $diff->y) ;
+    return $retirement_year ;
   }
   // ユーザーの事業種IDを返す関数
   public function get_business_type_id()
