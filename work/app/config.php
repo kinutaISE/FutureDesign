@@ -9,6 +9,7 @@ define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST']) ;
 define('PREFECTURES_FILENAME', __DIR__ . '/data/prefectures.csv') ;
 define('BUSINESS_TYPES_FILENAME', __DIR__ . '/data/business_types.csv') ;
 define('EARNING_TAX_FILENAME', __DIR__ . '/data/earning_tax.csv') ;
+define('RETIREMENT_OLD', 65) ; // 定年
 
 $anual_income_type_names = [
   '195万円以下',

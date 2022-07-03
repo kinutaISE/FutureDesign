@@ -131,7 +131,7 @@ function update_user_info($pdo)
   $birth_year = filter_input(INPUT_POST, 'birth_year') ;
   $birth_month = filter_input(INPUT_POST, 'birth_month') ;
   $birth_date = filter_input(INPUT_POST, 'birth_date') ;
-  $date_of_birth = $birth_year . '/' . $birth_month . '/' . $birth_date ;
+  $date_of_birth = $birth_year . '-' . $birth_month . '-' . $birth_date ;
   $business_type_id = trim( filter_input(INPUT_POST, 'business_type_id') ) ;
   $business_type_id = ($business_type_id === '') ? NULL : $business_type_id ;
   $prefecture_id = trim( filter_input(INPUT_POST, 'prefecture_id') ) ;
@@ -235,9 +235,9 @@ function add_cost_item($pdo)
   $value = trim( filter_input(INPUT_POST, 'cost_item_value') ) ;
   $is_constant = filter_input(INPUT_POST, 'is_constant') ;
   $term_start =
-    filter_input(INPUT_POST, 'term_start_year') . '/' . filter_input(INPUT_POST, 'term_start_month') ;
+    filter_input(INPUT_POST, 'term_start_year') . '-' . filter_input(INPUT_POST, 'term_start_month') ;
   $term_finish =
-    filter_input(INPUT_POST, 'term_finish_year') . '/' . filter_input(INPUT_POST, 'term_finish_month') ;
+    filter_input(INPUT_POST, 'term_finish_year') . '-' . filter_input(INPUT_POST, 'term_finish_month') ;
   $term = ($is_constant) ?
     'constant' : $term_start . '~' . $term_finish ;
   $frequency_number = trim( filter_input(INPUT_POST, 'frequency_number') ) ;
