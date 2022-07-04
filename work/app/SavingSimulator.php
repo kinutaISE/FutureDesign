@@ -71,58 +71,6 @@ class SavingSimulator
     // ユーザーが定年を迎える西暦を求める
     $retirement_year = $user->get_retirement_year() ;
 
-    // 常に発生するものから処理する
-    // ユーザーの支出項目を取得する（単位は「日」「週」「月」）
-    $search = '%years' ;
-    $term = 'constant' ;
-    $stmt = $pdo->prepare("
-      SELECT
-        *
-      FROM
-        cost_items
-      WHERE
-        term = :term AND
-        frequency NOT LIKE :search AND
-        user_id = :user_id
-    ") ;
-    $stmt->bindValue('search', $search) ;
-    $stmt->bindValue('term', $term) ;
-    $stmt->bindValue('user_id', $user_id) ;
-    $stmt->execute() ;
-    $cost_items_const = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
-
-    // 毎年かかる支出の合計を求める
-    $total_cost_yearly = 0 ;
-    foreach ($cost_items_const as $cost_item) {
-      $cost_yearly = 0 ;
-      $frequency_splited = explode(' ', $cost_item['frequency']) ;
-      // 単位が「日」「週」「月」のいずれかの場合：
-      switch ( $frequency_splited[1] ) {
-        case 'days':
-          $cost_yearly =
-            $cost_item['value'] * floor( 365 / $frequency_splited[0] ) ;
-          break ;
-        case 'weeks':
-          $cost_yearly =
-            $cost_item['value'] * floor( 52 / $frequency_splited[0] ) ;
-          break ;
-        case 'months':
-          $cost_yearly =
-            $cost_item['value'] * floor( 12 / $frequency_splited[0] ) ;
-          break ;
-        default:
-          break ;
-      }
-      $total_cost_yearly += $cost_yearly ;
-    }
-    // ユーザーの支出項目を取得する（単位は「1年」）
-    $search = '1 years' ;
-    $term = 'constant' ;
-    $stmt->bindValue(':user_id', $user_id) ;
-    $stmt->execute() ;
-    $cost_items_const = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
-    foreach ($cost_items_const as $cost_item)
-      $total_cost_yearly += $cost_item['value'] ;
     /*
     各年の支出額を作成する配列の作成
       - キーの始まり：来年の西暦
@@ -132,8 +80,36 @@ class SavingSimulator
     $age = $user->get_age() ;
     $costs = array_combine(
       range(date('Y'), $retirement_year),
-      array_fill($age, 65 - $age + 1, $total_cost_yearly)
+      array_fill($age, 65 - $age + 1, 0)
     ) ;
+
+    // 常に発生するものから処理する
+    // ユーザーの支出項目を取得する（単位は「日」「週」「月」）
+    $stmt = $pdo->prepare("
+      SELECT
+        *
+      FROM
+        cost_items
+      WHERE
+        term = 'constant' AND
+        user_id = :user_id
+    ") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->execute() ;
+    $cost_items_const = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
+
+    // 毎年かかる支出の合計を求める
+    foreach ($cost_items_const as $cost_item) {
+      $frequency_splited = explode(' ', $cost_item['frequency']) ;
+      $current = new DateTime() ;
+      $retirement_ym = new DateTime($retirement_year . '-12') ;
+      $modifier = sprintf('+ %d %s', $frequency_splited[0], $frequency_splited[1]) ;
+      while ( $current <= $retirement_ym ) {
+        $costs[ $current->format('Y') ] += $cost_item['value'] ;
+        $current->modify($modifier) ;
+      }
+    }
+
     // 特定の期間にのみ発生する支出を加算する
     // ユーザーの支出項目を取得する
     $stmt = $pdo->prepare("
