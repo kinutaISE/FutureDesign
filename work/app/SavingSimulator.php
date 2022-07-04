@@ -32,32 +32,6 @@ class SavingSimulator
       $total_cost += $cost_item['value'] ;
     return $total_cost ;
   }
-  // 各年の貯蓄額を計算し配列で返す関数
-  public static function get_savings($pdo)
-  {
-    // ユーザーIDを取得する
-    $user_id = $_SESSION['user_id'] ;
-    // ユーザー情報を取得する
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
-    $stmt->bindValue('user_id', $user_id) ;
-    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
-    $stmt->execute() ;
-    $user = $stmt->fetch() ;
-    // ユーザーが定年を迎える西暦を求める
-    $retirement_year = $user->get_retirment_year() ;
-    // 各年の支出額をもつ配列の取得
-    $costs = SavingSimulator::get_costs($pdo) ;
-    /*
-    各年の貯蓄額を作成する配列の作成
-      - キーの始まり：来年の西暦
-      - キーの終わり：ユーザーが定年を迎える西暦
-    */
-    $savings = array_combine(
-      array_fill(1, 65, 0),
-      range(date('Y'), $retirement_year)
-    ) ;
-
-  }
   public static function get_costs($pdo)
   {
     // ユーザーIDを取得する
@@ -185,5 +159,17 @@ class SavingSimulator
     }
     // 各年の支出額をもつ配列を返す
     return $costs ;
+  }
+  // 各年の貯蓄額を求める関数
+  public static function get_savings($pdo) {
+    // 各年の収入額を取得する
+    $incomes = IncomeSimulator::get_incomes($pdo) ;
+    // 各年の支出額を取得する
+    $costs = SavingSimulator::get_costs($pdo) ;
+    // 各年の貯蓄額を計算する
+    $savings = array() ;
+    foreach ($incomes as $year => $income)
+      $savings[$year] = $income - $costs[$year] ;
+    return $savings ;
   }
 }

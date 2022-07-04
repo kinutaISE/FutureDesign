@@ -162,4 +162,31 @@ class IncomeSimulator
     $all_deducations = array_merge($all_deducations, $insurance_fee_personal) ;
     return $all_deducations ;
   }
+  // 年別の収入を返す関数
+  public static function get_incomes($pdo)
+  {
+    // ユーザー情報を抽出
+    $user_id = $_SESSION['user_id'] ;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :user_id") ;
+    $stmt->bindValue('user_id', $user_id) ;
+    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
+    // ユーザーの月当たりの手取りを求める
+    $residual_monthly = IncomeSimulator::calc_residual($pdo) ;
+    // 年別の手取り合計を求める
+    $retirement_year = $user->get_retirement_year() ;
+    $age = $user->get_age() ;
+    $residuals = array_combine(
+      range(date('Y'), $retirement_year),
+      array_fill($age, 65 - $age + 1, 0)
+    ) ;
+    $current = new DateTime() ;
+    $retirement_ym = new DateTime( $retirement_year . '-12' ) ;
+    while ( $current <= $retirement_ym ) {
+      $residuals[ $current->format('Y') ] += $residual_monthly ;
+      $current->modify('+ 1 months') ;
+    }
+    return $residuals ;
+  }
 }
