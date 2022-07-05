@@ -13,6 +13,7 @@ $savings = SavingSimulator::get_savings($pdo) ;
 ?>
 
 <body>
+<!--
   年別支出額：
   <ul>
     <?php foreach ($costs as $year => $cost):?>
@@ -31,6 +32,7 @@ $savings = SavingSimulator::get_savings($pdo) ;
       <li><?= $year . ':' . number_format($saving) . '円' ;?></li>
     <?php endforeach ; ?>
   </ul>
+-->
   <p><a href="download_saving_simulation.php">[ダウンロード]年別の貯蓄額（csvファイル形式）</a></p>
   <p><a href="mypage.php">戻る</a></p>
 </body>
