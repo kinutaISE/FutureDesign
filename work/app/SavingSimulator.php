@@ -161,7 +161,8 @@ class SavingSimulator
     return $costs ;
   }
   // 各年の貯蓄額を求める関数
-  public static function get_savings($pdo) {
+  public static function get_savings($pdo)
+  {
     // 各年の収入額を取得する
     $incomes = IncomeSimulator::get_incomes($pdo) ;
     // 各年の支出額を取得する
@@ -171,5 +172,19 @@ class SavingSimulator
     foreach ($incomes as $year => $income)
       $savings[$year] = $income - $costs[$year] ;
     return $savings ;
+  }
+  // 年別累計貯蓄を求める関数
+  public static function get_cumulative_savings($pdo)
+  {
+    // 年別の貯蓄額を求める
+    $savings = SavingSimulator::get_savings($pdo) ;
+    // 各年の累計貯蓄額を求める
+    $cumulative_savings = array() ;
+    foreach ( $savings as $year => $saving ) {
+      $cumulative_savings[ $year ] =
+        ( $year == date('Y') ) ?
+          $saving : $cumulative_savings[$year - 1] + $saving ;
+    }
+    return $cumulative_savings ;
   }
 }
