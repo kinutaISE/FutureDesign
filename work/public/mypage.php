@@ -58,6 +58,7 @@ $cost_items = get_cost_items($pdo) ;
 // 都道府県のテーブルを獲得
 $prefectures = get_prefectures_info($pdo) ;
 */
+$user_month ;
 ?>
 
 
@@ -71,34 +72,7 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 基本情報 -->
     <h2>基本情報</h2>
     生年月日：
-    <!-- 年 -->
-    <select name="birth_year">
-      <?php for ($year = 1965 ; $year <= date('Y') ; $year++):?>
-        <option value="<?= $year ;?>" <?= ($user->get_birth_year() == $year) ? 'selected' : '' ;?>>
-          <?= $year ;?>
-        </option>
-      <?php endfor ;?>
-    </select>
-    年
-    <!-- 月 -->
-    <select name="birth_month">
-      <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-        <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>" <?= ($user->get_birth_month() == $month) ? 'selected' : '' ; ?>>
-          <?= $month ;?>
-        </option>
-      <?php endfor ;?>
-    </select>
-    月
-    <!-- 日 -->
-    <select name="birth_date">
-      <?php for ($date = 1 ; $date <= 31 ; $date++):?>
-        <option value="<?= ( ($date < 10) ? 0 : '' ) . $date ;?>" <?= ($user->get_birth_date() == $date) ? 'selected' : '' ;?>>
-          <?= $date ;?>
-        </option>
-      <?php endfor ;?>
-    </select>
-    日
-
+    <input type = "date" name = "calendar" max = "9999-12-31">
     <br>
     事業種：
     <select name="business_type_id">
