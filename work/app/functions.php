@@ -292,6 +292,9 @@ function download_savings($pdo)
 
   readfile($filepath) ;
 
+  // ファイルの削除
+  unlink($filepath) ;
+
   exit ; // これを絶対忘れない！！！！
 }
 // 各年の貯蓄額を保持する csv ファイルの出力
