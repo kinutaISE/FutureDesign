@@ -72,7 +72,7 @@ $cost_items = get_cost_items($pdo) ;
       type = "date"
       name = "date_of_birth"
       min = "<?= $now->modify('- 100 years')->format('Y-m-d') ;?>"
-      max = "<?= $now->modify('+ 90 years')->format('Y-m-d') ;?>"
+      max = "<?= $now->modify('+ 95 years')->format('Y-m-d') ;?>"
       value = "<?= empty($user->get_date_of_birth()) ? '' : $user->get_date_of_birth() ?>"
     />
     <br>
