@@ -54,10 +54,6 @@ $user = get_user_info($pdo) ;
 $earning_items = get_earning_items($pdo) ;
 // ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
-/*
-// 都道府県のテーブルを獲得
-$prefectures = get_prefectures_info($pdo) ;
-*/
 ?>
 
 
@@ -71,7 +67,14 @@ $prefectures = get_prefectures_info($pdo) ;
     <!-- 基本情報 -->
     <h2>基本情報</h2>
     生年月日：
-    <input type = "date" name = "date_of_birth" max = "9999-12-31" />
+    <?php $now = new DateTime() ;?>
+    <input
+      type = "date"
+      name = "date_of_birth"
+      min = "<?= $now->modify('- 100 years')->format('Y-m-d') ;?>"
+      max = "<?= $now->modify('+ 90 years')->format('Y-m-d') ;?>"
+      value = "<?= empty($user->get_date_of_birth()) ? '' : $user->get_date_of_birth() ?>"
+    />
     <br>
     事業種：
     <select name="business_type_id">
@@ -158,31 +161,25 @@ $prefectures = get_prefectures_info($pdo) ;
         <!-- 常に必要となる支出かどうか -->
         <input type="checkbox" name="is_constant" value="constant">常にかかる支出
         <br>
-        <!-- 期間の選択 -->
-        <select name="term_start_year">
-          <?php for ($year = date('Y') ; $year <= date('Y') + 50 ; $year++):?>
-            <option value="<?= $year ;?>"> <?= $year ;?> </option>
-          <?php endfor ;?>
-        </select>
-        年
-        <select name="term_start_month">
-          <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-            <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>"> <?= $month ;?> </option>
-          <?php endfor ;?>
-        </select>
-        月〜
-        <select name="term_finish_year">
-          <?php for ($year = date('Y') ; $year <= date('Y') + 50 ; $year++):?>
-            <option value="<?= $year ;?>"> <?= $year ;?> </option>
-          <?php endfor ;?>
-        </select>
-        年
-        <select name="term_finish_month">
-          <?php for ($month = 1 ; $month <= 12 ; $month++):?>
-            <option value="<?= ( ($month < 10) ? 0 : '' ) . $month ;?>"> <?= $month ;?> </option>
-          <?php endfor ;?>
-        </select>
-        月
+      </div>
+      <div>
+        <!-- 期間の開始 -->
+        <?php $now = new DateTime() ;?>
+        <input
+          type="date"
+          name="term_start"
+          min="<?= $now->format('Y-m-d') ;?>"
+          max="<?= $now->modify('+ 100 years')->format('Y-m-d') ;?>"
+        />
+        〜
+        <!-- 期間の終了 -->
+        <?php $now = new DateTime() ;?>
+        <input
+          type="date"
+          name="term_finish"
+          min="<?= $now->format('Y-m-d') ;?>"
+          max="<?= $now->modify('+ 100 years')->format('Y-m-d') ;?>"
+        />
       </div>
       <!-- 頻度（日、週、月、年） -->
       <div class="frequency_form">
