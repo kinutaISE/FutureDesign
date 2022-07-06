@@ -231,10 +231,8 @@ function add_cost_item($pdo)
   $name = trim( filter_input(INPUT_POST, 'cost_item_name') ) ;
   $value = trim( filter_input(INPUT_POST, 'cost_item_value') ) ;
   $is_constant = filter_input(INPUT_POST, 'is_constant') ;
-  $term_start =
-    filter_input(INPUT_POST, 'term_start_year') . '-' . filter_input(INPUT_POST, 'term_start_month') ;
-  $term_finish =
-    filter_input(INPUT_POST, 'term_finish_year') . '-' . filter_input(INPUT_POST, 'term_finish_month') ;
+  $term_start = filter_input(INPUT_POST, 'term_start') ;
+  $term_finish = filter_input(INPUT_POST, 'term_finish') ;
   $term = ($is_constant) ?
     'constant' : $term_start . '~' . $term_finish ;
   $frequency_number = trim( filter_input(INPUT_POST, 'frequency_number') ) ;
