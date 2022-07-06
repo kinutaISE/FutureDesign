@@ -337,3 +337,17 @@ function make_savings_csv($pdo, $filepath)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+// 配列操作関数 //////////////////////////////////////////////////////////////////
+function array_step($array, $step = 5)
+{
+  $array_step = array() ;
+  $arrays_chunk = array_chunk($array, $step, true) ;
+  foreach ($arrays_chunk as $array_chunk) {
+    foreach ($array_chunk as $key => $value) {
+      $array_step[ $key ] = $value ;
+      break ;
+    }
+  }
+  return $array_step ;
+}

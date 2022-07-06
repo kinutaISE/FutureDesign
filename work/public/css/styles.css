@@ -19,3 +19,8 @@ ul {
 li {
   text-align: center;
 }
+.chart {
+  width: 1400px ;
+  height: 700px ;
+  align: center ;
+}
