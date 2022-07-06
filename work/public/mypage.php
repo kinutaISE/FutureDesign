@@ -211,8 +211,6 @@ $user_month ;
     <?php endforeach ; ?>
     </ul>
   </div>
-  <!-- 収入シミュレーションへのリンク -->
-  <p><a href="income_simulation.php">収入のシミュレーションを行う</a></p>
   <!-- 貯蓄シミュレーションへのリンク -->
   <p><a href="saving_simulation.php">貯蓄のシミュレーションを行う</a></p>
 </body>
