@@ -58,7 +58,6 @@ $cost_items = get_cost_items($pdo) ;
 // 都道府県のテーブルを獲得
 $prefectures = get_prefectures_info($pdo) ;
 */
-$user_month ;
 ?>
 
 
@@ -72,7 +71,7 @@ $user_month ;
     <!-- 基本情報 -->
     <h2>基本情報</h2>
     生年月日：
-    <input type = "date" name = "calendar" max = "9999-12-31">
+    <input type = "date" name = "date_of_birth" max = "9999-12-31" />
     <br>
     事業種：
     <select name="business_type_id">
