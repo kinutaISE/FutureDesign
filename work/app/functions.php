@@ -127,11 +127,8 @@ function update_user_info($pdo)
   // 操作：ユーザー情報の更新
   // 対象：users
   $user_id = $_SESSION['user_id'] ;
-
-  $birth_year = filter_input(INPUT_POST, 'birth_year') ;
-  $birth_month = filter_input(INPUT_POST, 'birth_month') ;
-  $birth_date = filter_input(INPUT_POST, 'birth_date') ;
-  $date_of_birth = $birth_year . '-' . $birth_month . '-' . $birth_date ;
+  $date_of_birth = trim( filter_input(INPUT_POST, 'date_of_birth') ) ;
+  $date_of_birth = ($date_of_birth === '') ? NULL : $date_of_birth ;
   $business_type_id = trim( filter_input(INPUT_POST, 'business_type_id') ) ;
   $business_type_id = ($business_type_id === '') ? NULL : $business_type_id ;
   $prefecture_id = trim( filter_input(INPUT_POST, 'prefecture_id') ) ;
