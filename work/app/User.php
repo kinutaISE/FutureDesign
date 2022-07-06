@@ -20,24 +20,6 @@ class User
   {
     return $this->date_of_birth ;
   }
-  // ユーザーの生年月日（年）を返す関数
-  public function get_birth_year()
-  {
-    $dob_splited = explode('-', $this->date_of_birth) ;
-    return ( ($this->date_of_birth !== NULL) ? $dob_splited[0] : NULL ) ;
-  }
-  // ユーザーの生年月日（月）を返す関数
-  public function get_birth_month()
-  {
-    $dob_splited = explode('-', $this->date_of_birth) ;
-    return ( ($this->date_of_birth !== NULL) ? $dob_splited[1] : NULL ) ;
-  }
-  // ユーザーの生年月日（日）を返す関数
-  public function get_birth_date()
-  {
-    $dob_splited = explode('-', $this->date_of_birth) ;
-    return ( ($this->date_of_birth !== NULL) ? $dob_splited[2] : NULL ) ;
-  }
   // ユーザーの年齢を返す関数
   public function get_age()
   {
