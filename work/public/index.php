@@ -28,6 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
   <h1>将来設計</h1>
   <p>
+    <?php
+      echo $_SESSION['signup_success'] ;
+      $_SESSION['signup_success'] = '' ;
+    ?>
+  </p>
+  <p>
     <span style="background-color: rgba(255, 0, 0, 0.75)">
       <?= $message ;?>
     </span>
