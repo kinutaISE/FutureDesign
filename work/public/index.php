@@ -4,11 +4,35 @@ require_once('../app/config.php') ;
 
 include_once('_parts/_header.php') ;
 
+// 不適切なログインID・パスワードが入力された場合に表示するテキスト
+$message = '' ;
+// 適切なユーザーIDとパスワードの組み合わせであるか
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $pdo = Database::getInstance() ;
+  $user = find_user_id($pdo) ;
+  $password = filter_input(INPUT_POST, 'password') ;
+  if ( ($user !== false) && ($user->password == $password) ) {
+    // 照合が取れた場合、マイページへ
+    $_SESSION['user_id'] = $user->id ;
+    header('Location: ' . SITE_URL . '/../mypage.php') ;
+    exit ;
+  }
+  else {
+    // そうでない場合は以下のメッセージを表示する
+    $message = 'ログインIDまたはパスワードが間違っています' ;
+  }
+}
+
 ?>
 
 <body>
   <h1>将来設計</h1>
-  <form method="post" action="login.php">
+  <p>
+    <span style="background-color: rgba(255, 0, 0, 0.75)">
+      <?= $message ;?>
+    </span>
+  </p>
+  <form method="post" action="">
     <div>
       <label>ユーザーID</label>
       <input type="text" name="user_id" minlength="5" maxlength="16" pattern="^[a-zA-Z0-9]+$" required>
