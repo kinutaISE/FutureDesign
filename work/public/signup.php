@@ -4,11 +4,31 @@ require_once('../app/config.php') ;
 
 include_once('_parts/_header.php') ;
 
+$result = NULL ;
+if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+  $pdo = Database::getInstance() ;
+  $result = regist_user($pdo) ;
+}
+
 ?>
 
 <body>
   <h1>新規登録</h1>
-  <form method="post" action="register.php">
+  <?php if ($result !== NULL):?>
+    <?php
+    if ($result['is_successful']) {
+      $_SESSION['signup_success'] = "登録が完了しました。以下よりマイページにログインしてください。" ;
+      header('Location: ' . SITE_URL . '/../index.php') ;
+      exit ;
+    }
+    ?>
+    <p>
+      <span style="background-color: rgba(255, 0, 0, 0.75)">
+        <?= $result['message'] ;?>
+      </span>
+    </p>
+  <?php endif;?>
+  <form method="post" action="">
     <div>
       <label>メールアドレス</label>
       <input type="email" name="email" action="register.php">

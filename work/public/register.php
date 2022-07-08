@@ -6,8 +6,6 @@ include_once('_parts/_header.php') ;
 
 $pdo = Database::getInstance() ;
 
-$result = regist_user($pdo) ;
-
 ?>
 
 <body>
