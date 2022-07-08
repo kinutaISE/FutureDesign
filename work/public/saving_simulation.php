@@ -11,9 +11,9 @@ $costs = SavingSimulator::get_costs($pdo) ;
 $savings = SavingSimulator::get_savings($pdo) ;
 
 // フロント側に配列を渡す
-$json_incomes = json_encode( array_step($incomes) ) ;
-$json_costs = json_encode( array_step($costs) ) ;
-$json_savings = json_encode( array_step($savings) ) ;
+$json_incomes = json_encode( array_step($incomes, 3) ) ;
+$json_costs = json_encode( array_step($costs, 3) ) ;
+$json_savings = json_encode( array_step($savings, 3) ) ;
 
 ?>
 
@@ -27,22 +27,38 @@ $json_savings = json_encode( array_step($savings) ) ;
 
 <body>
   <div class="chart">
-    <canvas id="mychart-bar"></canvas>
+    <canvas id="saving-bar"></canvas>
   </div>
   <script>
     // PHP から配列を受け取る
-    var incomes = <?= $json_incomes ;?> ;
-    var costs = <?= $json_costs ;?> ;
-    var savings = <?= $json_savings ;?> ;
-    var years = Object.keys(savings) ;
+    const incomes_obj = <?= $json_incomes ;?> ;
+    const costs_obj = <?= $json_costs ;?> ;
+    const savings_obj = <?= $json_savings ;?> ;
+    // object → 配列とする
+    const years = Object.keys(savings_obj) ;
+    const incomes = Object.keys(incomes_obj).map(function (key) {
+      return [ key, incomes_obj[key] ] ;
+    }) ;
+    const costs_rev = Object.keys(costs_obj).map(function (key) {
+      return [ key, (-1) * costs_obj[key] ] ;
+    }) ;
+    const savings = Object.keys(savings_obj).map(function (key) {
+      return [ key, savings_obj[key] ] ;
+    }) ;
 
     // 描画する
-    var ctx = document.getElementById('mychart-bar');
-    var myChart = new Chart(ctx, {
+    var ctx = document.getElementById('saving-bar');
+    var saving_bar = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: years,
         datasets: [
+          {
+            type: 'line',
+            label: '貯蓄',
+            data: savings,
+            backgroundColor: '#48f',
+          },
           {
             label: '収入',
             data: incomes,
@@ -50,39 +66,13 @@ $json_savings = json_encode( array_step($savings) ) ;
           },
           {
             label: '支出',
-            data: costs,
+            data: costs_rev,
             backgroundColor: '#484',
-          },
-          {
-            label: '貯蓄',
-            data: savings,
-            backgroundColor: '#48f',
           },
         ],
       },
     }) ;
   </script>
-
-<!--
-  年別支出額：
-  <ul>
-    <?php foreach ($costs as $year => $cost):?>
-      <li><?= $year . ':' . number_format($cost) . '円' ;?></li>
-    <?php endforeach ; ?>
-  </ul>
-  年別収入額：
-  <ul>
-    <?php foreach ($incomes as $year => $income):?>
-      <li><?= $year . ':' . number_format($income) . '円' ;?></li>
-    <?php endforeach ; ?>
-  </ul>
-  年別貯蓄額：
-  <ul>
-    <?php foreach ($savings as $year => $saving):?>
-      <li><?= $year . ':' . number_format($saving) . '円' ;?></li>
-    <?php endforeach ; ?>
-  </ul>
--->
   <p><a href="download_saving_simulation.php">[ダウンロード]年別の貯蓄額（csvファイル形式）</a></p>
   <p><a href="mypage.php">戻る</a></p>
 </body>
