@@ -49,3 +49,18 @@ CREATE TABLE cost_items(
   user_id VARCHAR(255) NOT NULL, -- ユーザーID
   PRIMARY KEY (id)
 ) ;
+
+DROP TABLE IF EXISTS partner_applications ;
+CREATE TABLE partner_applications (
+  id INT NOT NULL AUTO_INCREMENT, -- パートナー申請ID（主キー）
+  created DATETIME NOT NULL DEFAULT NOW(), -- 申請日時
+  updated DATETIME NOT NULL DEFAULT NOW(), -- 最終更新日時
+  from_id VARCHAR(255) NOT NULL, -- 申請者ID
+  to_id VARCHAR(255) NOT NULL, -- 申請相手ID
+  status ENUM (
+    'waiting', -- 許可待ち
+    'allowed', -- 許可済み
+    'rejected' -- 拒否済み
+  ),
+  PRIMARY KEY (id)
+) ;
