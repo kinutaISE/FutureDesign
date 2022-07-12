@@ -40,6 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     case 'delete_application':
       delete_application($pdo) ;
       break ;
+    case 'lift_partner':
+      lift_partner($pdo) ;
+      break ;
     default:
       exit('Invalid post request!!') ;
   }
@@ -257,7 +260,13 @@ $partner_applications = get_all_partner_applications($pdo) ;
       </form>
     </div>
   <?php else:?>
-    <p>登録済パートナー：<?= $user->get_partner_id() ;?></p>
+    <p>
+      登録済パートナー：<?= $user->get_partner_id() ;?>
+      <form method="post" action="?action=lift_partner">
+        <input type="hidden" name="partner_id" value="<?= $user->get_partner_id() ;?>">
+        <button>登録の解除</button>
+      </form>
+    </p>
   <?php endif ;?>
   <!-- パートナー申請一覧 -->
   <div>

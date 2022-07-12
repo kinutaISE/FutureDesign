@@ -282,10 +282,17 @@ function send_partner_application($pdo)
   // 申請先IDをもつユーザーを検索
   $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :to_id") ;
   $stmt->bindValue('to_id', $to_id) ;
+  $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
   $stmt->execute() ;
   $user = $stmt->fetch() ;
   // 存在しない場合 → 失敗
   if ($user === false) {
+    $_SESSION['partner_application_result'] = false ;
+    $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に失敗しました' ;
+    return ;
+  }
+  // 既にパートナーがいる場合 → 失敗
+  if ( $user->get_partner_id() !== NULL ) {
     $_SESSION['partner_application_result'] = false ;
     $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に失敗しました' ;
     return ;
@@ -354,6 +361,8 @@ function allow_application($pdo)
   $stmt->bindValue(':to_id_2', $to_id) ;
   $stmt->bindValue(':from_id_2', $from_id) ;
   $stmt->execute() ;
+  // 申請先ユーザーへの申請を全て削除する
+  sweep_applications($pdo) ;
 }
 // 申請を削除する
 function delete_application($pdo)
@@ -371,6 +380,41 @@ function delete_application($pdo)
       AND to_id = :to_id
   ') ;
   $stmt->bindValue('from_id', $from_id) ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
+}
+function lift_partner($pdo)
+{
+  // 解除を選択したユーザーのID
+  $user_id = $_SESSION['user_id'] ;
+  // 解除されるユーザーのID
+  $partner_id = filter_input(INPUT_POST, 'partner_id') ;
+  // 双方のパートナーIDをNULLに更新する
+  $stmt = $pdo->prepare('
+    UPDATE
+      users
+    SET
+      partner_id = NULL
+    WHERE
+      id = :id
+  ') ;
+  $stmt->bindValue(':id', $user_id) ;
+  $stmt->execute() ;
+  $stmt->bindValue(':id', $partner_id) ;
+  $stmt->execute() ;
+}
+// ユーザーへの申請を全て一掃する（申請許可を出した時に呼び出す）
+function sweep_applications($pdo)
+{
+  // 申請先IDを取得する（利用しているユーザーのID）
+  $to_id = $_SESSION['user_id'] ;
+  // 自身への申請を全て削除する
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      to_id = :to_id
+  ') ;
   $stmt->bindValue('to_id', $to_id) ;
   $stmt->execute() ;
 }
