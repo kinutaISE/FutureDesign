@@ -72,7 +72,7 @@ function regist_user($pdo)
 
   // 成功したかどうか、メッセージ、リンクをセットにして返す
   $result = [
-    'is_successful' => true,
+    'is_successful' => false,
     'message' => '',
     'link' => ''
   ] ;

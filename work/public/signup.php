@@ -16,14 +16,20 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
   <h1>新規登録</h1>
   <?php if ($result !== NULL):?>
     <?php
-    if ($result['is_successful']) {
+    if ( $result['is_successful'] ) {
       $_SESSION['signup_success'] = "登録が完了しました。以下よりマイページにログインしてください。" ;
       header('Location: ' . SITE_URL . '/../index.php') ;
       exit ;
     }
     ?>
     <p>
-      <span style="background-color: rgba(255, 0, 0, 0.75)">
+      <span
+        style="
+        background-color: rgba(255, 0, 0, 0.1) ;
+        border: solid ;
+        border-color: rgb(255, 0, 0) ;
+        "
+      >
         <?= $result['message'] ;?>
       </span>
     </p>
