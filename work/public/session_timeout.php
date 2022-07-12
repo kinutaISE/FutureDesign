@@ -6,7 +6,7 @@ include_once('_parts/_header.php') ;
 
 <body>
   <p>セッションの有効期限が切れました</p>
-  <p><a href="login_form.php">ログイン</a></p>
+  <p><a href="index.php">ログイン</a></p>
 </body>
 
 <?php

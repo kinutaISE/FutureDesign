@@ -358,7 +358,21 @@ function allow_application($pdo)
 // 申請を削除する
 function delete_application($pdo)
 {
-
+  // 申請先IDを取得する
+  $to_id = $_SESSION['user_id'] ;
+  // 許可するユーザーの申請者IDを取得する
+  $from_id = filter_input(INPUT_POST, 'from_id') ;
+  // 申請先IDと申請者IDが合致する申請を削除する
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      from_id = :from_id
+      AND to_id = :to_id
+  ') ;
+  $stmt->bindValue('from_id', $from_id) ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

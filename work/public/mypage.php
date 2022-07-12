@@ -65,6 +65,7 @@ $partner_applications = get_all_partner_applications($pdo) ;
   <h1>将来設計</h1>
 
   <p><?= $user_id ;?> さんのマイページ</p>
+  <p><a href="index.php">ログアウト</a></p>
 
   <!-- パートナー登録申請送信の結果 -->
   <?php
@@ -261,6 +262,7 @@ $partner_applications = get_all_partner_applications($pdo) ;
   <!-- パートナー申請一覧 -->
   <div>
     <h3>パートナー申請一覧</h3>
+    <p><?= empty($partner_application) ? 'パートナーの申請登録はありません' : '' ;?></p>
     <ul>
       <?php foreach ($partner_applications as $partner_application):?>
           <li><?= $partner_application['from_id'] ;?></li>
