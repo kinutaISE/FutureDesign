@@ -16,7 +16,7 @@ CREATE TABLE users(
   business_type_id VARCHAR(255), -- 事業種ID
   prefecture_id VARCHAR(255), -- 都道府県ID
   dependents_num INT, -- 扶養人数
-  partner_id INT, -- パートナーID
+  partner_id VARCHAR(255), -- パートナーID
   PRIMARY KEY (id)
 ) ;
 
@@ -54,13 +54,7 @@ DROP TABLE IF EXISTS partner_applications ;
 CREATE TABLE partner_applications (
   id INT NOT NULL AUTO_INCREMENT, -- パートナー申請ID（主キー）
   created DATETIME NOT NULL DEFAULT NOW(), -- 申請日時
-  updated DATETIME NOT NULL DEFAULT NOW(), -- 最終更新日時
   from_id VARCHAR(255) NOT NULL, -- 申請者ID
-  to_id VARCHAR(255) NOT NULL, -- 申請相手ID
-  status ENUM (
-    'waiting', -- 許可待ち
-    'allowed', -- 許可済み
-    'rejected' -- 拒否済み
-  ),
+  to_id VARCHAR(255) NOT NULL, -- 申請先ID
   PRIMARY KEY (id)
 ) ;

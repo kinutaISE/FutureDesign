@@ -18,32 +18,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   switch ($action) {
     case 'add_cost_item':
       add_cost_item($pdo) ;
-      header('Location: ' . SITE_URL . '/../mypage.php') ;
-      exit ;
       break ;
     case 'delete_cost_item':
       delete_cost_item($pdo) ;
-      header('Location: ' . SITE_URL . '/../mypage.php') ;
-      exit ;
       break ;
     case 'update_user_info':
       update_user_info($pdo) ;
-      header('Location: ' . SITE_URL . '/../mypage.php') ;
-      exit ;
       break ;
     case 'add_earning_item':
       add_earning_item($pdo) ;
-      header('Location: ' . SITE_URL . '/../mypage.php') ;
-      exit ;
       break ;
     case 'delete_earning_item':
       delete_earning_item($pdo) ;
-      header('Location: ' . SITE_URL . '/../mypage.php') ;
-      exit ;
+      break ;
+    case 'applicate_partner':
+      send_partner_application($pdo) ;
+      break ;
+    case 'allow_application':
+      allow_application($pdo) ;
+      break ;
+    case 'delete_application':
+      delete_application($pdo) ;
       break ;
     default:
       exit('Invalid post request!!') ;
   }
+  header('Location: ' . SITE_URL . '/../mypage.php') ;
+  exit ;
 }
 
 // ユーザーIDの獲得
@@ -54,6 +55,8 @@ $user = get_user_info($pdo) ;
 $earning_items = get_earning_items($pdo) ;
 // ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
+// パートナー申請の獲得
+$partner_applications = get_all_partner_applications($pdo) ;
 ?>
 
 
@@ -63,6 +66,37 @@ $cost_items = get_cost_items($pdo) ;
 
   <p><?= $user_id ;?> さんのマイページ</p>
 
+  <!-- パートナー登録申請送信の結果 -->
+  <?php
+    if (
+      in_array( 'partner_application_result', array_keys($_SESSION), true )
+      && $_SESSION['partner_application_result'] !== NULL
+    ):
+  ?>
+    <div id="partner_application_result">
+      <p>
+        <span
+          style= "
+            background-color:
+            <?= ($_SESSION['partner_application_result']) ?
+              "rgba(0, 255, 0, 0.1)" : "rgba(255, 0, 0, 0.1)" ;
+            ?> ;
+            border: solid ;
+            border-color:
+            <?= ($_SESSION['partner_application_result']) ?
+              "rgb(0, 255, 0)" :"rgb(255, 0, 0)" ;
+            ?> ;
+            "
+        >
+          <?= $_SESSION['partner_application_text'] ;?>
+        </span>
+      </p>
+      <?php
+        $_SESSION['partner_application_result'] = NULL ;
+        $_SESSION['partner_application_text'] = NULL ;
+      ?>
+    </div>
+  <?php endif ;?>
   <form method="post" action="?action=update_user_info">
     <!-- 基本情報 -->
     <h2>基本情報</h2>
@@ -209,6 +243,38 @@ $cost_items = get_cost_items($pdo) ;
   </div>
   <!-- 貯蓄シミュレーションへのリンク -->
   <p><a href="saving_simulation.php">貯蓄のシミュレーションを行う</a></p>
+
+  <h2>パートナー</h2>
+  <!-- パートナー登録申請フォーム -->
+  <?php if ( empty( $user->get_partner_id() ) ):?>
+    <div>
+      <h3>パートナー申請フォーム</h3>
+      <form method="post" action="?action=applicate_partner">
+        パートナーID：
+        <input type="text" name="to_id"></input>
+        <button>送信</button>
+      </form>
+    </div>
+  <?php else:?>
+    <p>登録済パートナー：<?= $user->get_partner_id() ;?></p>
+  <?php endif ;?>
+  <!-- パートナー申請一覧 -->
+  <div>
+    <h3>パートナー申請一覧</h3>
+    <ul>
+      <?php foreach ($partner_applications as $partner_application):?>
+          <li><?= $partner_application['from_id'] ;?></li>
+          <form method="post" action="?action=allow_application">
+            <input type="hidden" name="from_id" value="<?= $partner_application['from_id'] ;?>">
+            <button>許可</button>
+          </form>
+          <form method="post" action="?action=delete_application">
+            <input type="hidden" name="from_id" value="<?= $partner_application['from_id'] ;?>">
+            <button>削除</button>
+          </form>
+      <?php endforeach ;?>
+    </ul>
+  </div>
 </body>
 
 <?php
