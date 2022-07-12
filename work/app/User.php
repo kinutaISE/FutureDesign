@@ -20,6 +20,11 @@ class User
   {
     return $this->date_of_birth ;
   }
+  // ユーザーのパートナーIDを返す関数
+  public function get_partner_id()
+  {
+    return $this->partner_id ;
+  }
   // ユーザーの年齢を返す関数
   public function get_age()
   {

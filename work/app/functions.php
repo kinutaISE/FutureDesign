@@ -266,6 +266,161 @@ function delete_cost_item($pdo)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// partner_applications テーブルの操作 ////////////////////////////////////////////
+// テーブルへの挿入
+function send_partner_application($pdo)
+{
+  // 申請者ID・申請先IDを取得
+  $from_id = $_SESSION['user_id'] ;
+  $to_id = filter_input(INPUT_POST, 'to_id') ;
+  // 自身の ID の場合→失敗
+  if ($from_id === $to_id) {
+    $_SESSION['partner_application_result'] = false ;
+    $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に失敗しました' ;
+    return ;
+  }
+  // 申請先IDをもつユーザーを検索
+  $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :to_id") ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
+  $stmt->execute() ;
+  $user = $stmt->fetch() ;
+  // 存在しない場合 → 失敗
+  if ($user === false) {
+    $_SESSION['partner_application_result'] = false ;
+    $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に失敗しました' ;
+    return ;
+  }
+  // 既にパートナーがいる場合 → 失敗
+  if ( $user->get_partner_id() !== NULL ) {
+    $_SESSION['partner_application_result'] = false ;
+    $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に失敗しました' ;
+    return ;
+  }
+  // テーブルに申請を挿入
+  $stmt = $pdo->prepare("
+    INSERT INTO partner_applications (from_id, to_id)
+    values (:from_id, :to_id)
+  ") ;
+  $stmt->bindValue('from_id', $from_id) ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
+  $_SESSION['partner_application_result'] = true ;
+  $_SESSION['partner_application_text'] = 'パートナー登録申請の送信に成功しました' ;
+}
+
+// 自身への申請を抽出する
+function get_all_partner_applications($pdo)
+{
+  // 自身のIDを取得
+  $to_id = $_SESSION['user_id'] ;
+  // 自身宛のパートナー申請を抽出する
+  $stmt = $pdo->prepare('
+    SELECT * FROM partner_applications WHERE to_id = :to_id
+  ') ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
+  $applications = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
+  return $applications ;
+}
+// 申請を許可する
+function allow_application($pdo)
+{
+  // 申請先IDを取得する
+  $to_id = $_SESSION['user_id'] ;
+  // 許可するユーザーの申請者IDを取得する
+  $from_id = filter_input(INPUT_POST, 'from_id') ;
+  // 双方のパートナーIDに相手のIDを設定する
+  $stmt = $pdo->prepare('
+    UPDATE
+      users
+    SET
+      partner_id = :partner_id
+    WHERE
+      id = :id
+  ') ;
+  $stmt->bindValue(':id', $to_id) ;
+  $stmt->bindValue(':partner_id', $from_id) ;
+  $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
+  $stmt->execute() ;
+  $stmt->bindValue(':id', $from_id) ;
+  $stmt->bindValue(':partner_id', $to_id) ;
+  $stmt->execute() ;
+  // 双方に関係するレコードを全て削除
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      from_id = :from_id
+      OR from_id = :to_id
+      OR to_id = :to_id_2
+      OR to_id = :from_id_2
+  ') ;
+  $stmt->bindValue(':to_id', $to_id) ;
+  $stmt->bindValue(':from_id', $from_id) ;
+  $stmt->bindValue(':to_id_2', $to_id) ;
+  $stmt->bindValue(':from_id_2', $from_id) ;
+  $stmt->execute() ;
+  // 申請先ユーザーへの申請を全て削除する
+  sweep_applications($pdo) ;
+}
+// 申請を削除する
+function delete_application($pdo)
+{
+  // 申請先IDを取得する
+  $to_id = $_SESSION['user_id'] ;
+  // 許可するユーザーの申請者IDを取得する
+  $from_id = filter_input(INPUT_POST, 'from_id') ;
+  // 申請先IDと申請者IDが合致する申請を削除する
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      from_id = :from_id
+      AND to_id = :to_id
+  ') ;
+  $stmt->bindValue('from_id', $from_id) ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
+}
+function lift_partner($pdo)
+{
+  // 解除を選択したユーザーのID
+  $user_id = $_SESSION['user_id'] ;
+  // 解除されるユーザーのID
+  $partner_id = filter_input(INPUT_POST, 'partner_id') ;
+  // 双方のパートナーIDをNULLに更新する
+  $stmt = $pdo->prepare('
+    UPDATE
+      users
+    SET
+      partner_id = NULL
+    WHERE
+      id = :id
+  ') ;
+  $stmt->bindValue(':id', $user_id) ;
+  $stmt->execute() ;
+  $stmt->bindValue(':id', $partner_id) ;
+  $stmt->execute() ;
+}
+// ユーザーへの申請を全て一掃する（申請許可を出した時に呼び出す）
+function sweep_applications($pdo)
+{
+  // 申請先IDを取得する（利用しているユーザーのID）
+  $to_id = $_SESSION['user_id'] ;
+  // 自身への申請を全て削除する
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      to_id = :to_id
+  ') ;
+  $stmt->bindValue('to_id', $to_id) ;
+  $stmt->execute() ;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 // ダウンロード //////////////////////////////////////////////////////////////////
 // 毎年の貯蓄額を保持する csv ファイルのダウンロード
 function download_savings($pdo)
