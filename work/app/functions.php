@@ -72,7 +72,7 @@ function regist_user($pdo)
 
   // 成功したかどうか、メッセージ、リンクをセットにして返す
   $result = [
-    'is_successful' => true,
+    'is_successful' => false,
     'message' => '',
     'link' => ''
   ] ;
@@ -101,6 +101,7 @@ function regist_user($pdo)
     $stmt->bindValue('password', $password) ;
     $stmt->bindValue('email', $email) ;
     $stmt->execute() ;
+    $result['is_successful'] = true ;
     $result['message'] = '登録が完了しました' ;
     $result['link'] = '<a href="index.php">ログイン</a>' ;
   }

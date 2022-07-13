@@ -40,11 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </p>
   <form method="post" action="">
     <div>
-      <label>ユーザーID</label>
+      <label>ユーザーID（半角英数字）</label>
       <input type="text" name="user_id" minlength="5" maxlength="16" pattern="^[a-zA-Z0-9]+$" required>
     </div>
     <div>
-      <label>パスワード</label>
+      <label>パスワード（半角英数字）</label>
       <input type="password" name="password" minlength="8" maxlength="20" pattern="^[a-zA-Z0-9]+$" required>
     </div>
     <button>ログイン</button>
