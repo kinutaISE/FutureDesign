@@ -324,6 +324,19 @@ function get_all_partner_applications($pdo)
   $applications = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
   return $applications ;
 }
+// 自身が申請者となる申請を取り出す
+function get_my_partner_application($pdo)
+{
+  // 申請者IDを取得する
+  $from_id = $_SESSION['user_id'] ;
+  // 申請者IDが合致する申請を抽出する
+  $stmt = $pdo->prepare('SELECT * FROM partner_applications WHERE from_id = :from_id') ;
+  $stmt->bindValue(':from_id', $from_id) ;
+  $stmt->setFetchMode(PDO::FETCH_ASSOC) ;
+  $stmt->execute() ;
+  $my_application = $stmt->fetch() ;
+  return $my_application ;
+}
 // 申請を許可する
 function allow_application($pdo)
 {
