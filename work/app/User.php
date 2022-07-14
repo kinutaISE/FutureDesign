@@ -15,6 +15,11 @@ class User
   {
     return $this->id ;
   }
+  // ユーザーのパスワードを返す関数
+  public function get_password()
+  {
+    return $this->password ;
+  }
   // ユーザーの生年月日を返す関数
   public function get_date_of_birth()
   {
