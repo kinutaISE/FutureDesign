@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     case 'lift_partner':
       lift_partner($pdo) ;
       break ;
+    case 'withdraw_application':
+      withdraw_my_partner_application($pdo) ;
+      break ;
     default:
       exit('Invalid post request!!') ;
   }
@@ -58,6 +61,8 @@ $user = get_user_info($pdo) ;
 $earning_items = get_earning_items($pdo) ;
 // ログインしているユーザーの支出項目の獲得
 $cost_items = get_cost_items($pdo) ;
+// 自身の出している申請の獲得
+$my_application = get_my_partner_application($pdo) ;
 // パートナー申請の獲得
 $partner_applications = get_all_partner_applications($pdo) ;
 ?>
@@ -251,15 +256,25 @@ $partner_applications = get_all_partner_applications($pdo) ;
   <h2>パートナー</h2>
   <!-- パートナー登録申請フォーム -->
   <?php if ( empty( $user->get_partner_id() ) ):?>
+    <!-- パートナー未登録の場合 -->
     <div>
-      <h3>パートナー申請フォーム</h3>
-      <form method="post" action="?action=applicate_partner">
-        パートナーID：
-        <input type="text" name="to_id"></input>
-        <button>送信</button>
-      </form>
+      <?php if ( empty($my_application) ):?>
+        <h3>パートナー申請フォーム</h3>
+        <form method="post" action="?action=applicate_partner">
+          パートナーID：
+          <input type="text" name="to_id"></input>
+          <button>送信</button>
+        </form>
+      <?php else:?>
+        <form method="post" action="?action=withdraw_application">
+          申請中のユーザーID：<?= $my_application['to_id'] ;?>
+          <input type="hidden" name="to_id" value="<?= $my_application['to_id'] ;?>">
+          <button>申請を取り下げる</button>
+        </form>
+      <?php endif ;?>
     </div>
   <?php else:?>
+    <!-- パートナー登録済みの場合 -->
     <p>
       登録済パートナー：<?= $user->get_partner_id() ;?>
       <form method="post" action="?action=lift_partner">
@@ -271,7 +286,7 @@ $partner_applications = get_all_partner_applications($pdo) ;
   <!-- パートナー申請一覧 -->
   <div>
     <h3>パートナー申請一覧</h3>
-    <p><?= empty($partner_application) ? 'パートナーの申請登録はありません' : '' ;?></p>
+    <p><?= ( empty($partner_applications) ? 'パートナー登録申請はありません' : '' ) ;?></p>
     <ul>
       <?php foreach ($partner_applications as $partner_application):?>
           <li><?= $partner_application['from_id'] ;?></li>

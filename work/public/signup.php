@@ -4,7 +4,6 @@ require_once('../app/config.php') ;
 
 include_once('_parts/_header.php') ;
 
-$result = NULL ;
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
   $pdo = Database::getInstance() ;
   $result = regist_user($pdo) ;
@@ -14,7 +13,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 <body>
   <h1>新規登録</h1>
-  <?php if ($result !== NULL):?>
+  <?php if ( !empty($result) ):?>
     <?php
     if ( $result['is_successful'] ) {
       $_SESSION['signup_success'] = "登録が完了しました。以下よりマイページにログインしてください。" ;

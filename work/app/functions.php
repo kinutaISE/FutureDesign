@@ -46,6 +46,7 @@ function find_user_id($pdo)
     SELECT * FROM users WHERE id = :user_id
   ") ;
   $stmt->bindValue('user_id', $user_id) ;
+  $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
   $stmt->execute() ;
   $user = $stmt->fetch() ;
   return $user ;
@@ -324,9 +325,42 @@ function get_all_partner_applications($pdo)
   $applications = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
   return $applications ;
 }
+// 自身が申請者となる申請を取り出す
+function get_my_partner_application($pdo)
+{
+  // 申請者IDを取得する
+  $from_id = $_SESSION['user_id'] ;
+  // 申請者IDが合致する申請を抽出する
+  $stmt = $pdo->prepare('SELECT * FROM partner_applications WHERE from_id = :from_id') ;
+  $stmt->bindValue(':from_id', $from_id) ;
+  $stmt->setFetchMode(PDO::FETCH_ASSOC) ;
+  $stmt->execute() ;
+  $my_application = $stmt->fetch() ;
+  return $my_application ;
+}
+// 自身が出している申請を取り下げる
+function withdraw_my_partner_application($pdo)
+{
+  // 許可済み or 拒否済みの申請でないか確認する
+  check_application_from($pdo) ;
+  // 申請を抽出する
+  $my_application = get_my_partner_application($pdo) ;
+  // 申請をレコードから削除する
+  $stmt = $pdo->prepare('
+    DELETE FROM
+      partner_applications
+    WHERE
+      from_id = :from_id AND to_id = :to_id
+  ') ;
+  $stmt->bindValue('from_id', $my_application['from_id']) ;
+  $stmt->bindValue('to_id', $my_application['to_id']) ;
+  $stmt->execute() ;
+}
 // 申請を許可する
 function allow_application($pdo)
 {
+  // 対象の申請が残っているか
+  check_application_to($pdo) ;
   // 申請先IDを取得する
   $to_id = $_SESSION['user_id'] ;
   // 許可するユーザーの申請者IDを取得する
@@ -368,6 +402,8 @@ function allow_application($pdo)
 // 申請を削除する
 function delete_application($pdo)
 {
+  // 対象の申請が残っているか確認する
+  check_application_to($pdo) ;
   // 申請先IDを取得する
   $to_id = $_SESSION['user_id'] ;
   // 許可するユーザーの申請者IDを取得する
@@ -383,6 +419,82 @@ function delete_application($pdo)
   $stmt->bindValue('from_id', $from_id) ;
   $stmt->bindValue('to_id', $to_id) ;
   $stmt->execute() ;
+}
+// 自身への申請が残っているか確認する
+function check_application_to($pdo)
+{
+  // 申請先IDを取得する
+  $to_id = $_SESSION['user_id'] ;
+  // 申請者IDを取得する
+  $from_id = filter_input(INPUT_POST, 'from_id') ;
+  // 該当する申請が残っているか（取り下げられていないか）
+  $stmt = $pdo->prepare('
+    SELECT
+      *
+    FROM
+      partner_applications
+    WHERE
+      from_id = :from_id AND to_id = :to_id
+  ') ;
+  $stmt->bindValue(':from_id', $from_id) ;
+  $stmt->bindValue(':to_id', $to_id) ;
+  $stmt->setFetchMode(PDO::FETCH_ASSOC) ;
+  $stmt->execute() ;
+  $application = $stmt->fetch() ;
+  // 残っていなかった場合、エラーメッセージを表示
+  if ( empty($application) )
+    exit('<p>申請は取り下げられました<br><a href="mypage.php">マイページに戻る</a></p>') ;
+}
+// 自身が送信した申請が残っているか確認する
+function check_application_from($pdo)
+{
+  // 申請者IDを取得する
+  $from_id = $_SESSION['user_id'] ;
+  // 申請先IDを取得する
+  $to_id = filter_input(INPUT_POST, 'to_id') ;
+  // 該当する申請が残っているか（取り下げられていないか）
+  $stmt = $pdo->prepare('
+    SELECT
+      *
+    FROM
+      partner_applications
+    WHERE
+      from_id = :from_id AND to_id = :to_id
+  ') ;
+  $stmt->bindValue(':from_id', $from_id) ;
+  $stmt->bindValue(':to_id', $to_id) ;
+  $stmt->setFetchMode(PDO::FETCH_ASSOC) ;
+  $stmt->execute() ;
+  $application = $stmt->fetch() ;
+  // 残っていなかった場合、エラーメッセージを表示
+  if ( empty($application) ) {
+    // ユーザー情報の取得
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = :id') ;
+    $stmt->bindValue('id', $from_id) ;
+    $stmt->setFetchMode(PDO::FETCH_CLASS, 'User') ;
+    $stmt->execute() ;
+    $user = $stmt->fetch() ;
+    // 拒否された申請の場合
+    if ( empty( $user->get_partner_id() ) )
+      exit('
+        <p>
+          既に拒否された申請です<br>
+          <a href="mypage.php">
+            マイページに戻る
+          </a>
+        </p>
+      ') ;
+    else
+    exit('
+      <p>
+        既に許可された申請です<br>
+        マイページからパートナー登録の解除が可能です<br>
+        <a href="mypage.php">
+          マイページに戻る
+        </a>
+      </p>
+    ') ;
+  }
 }
 function lift_partner($pdo)
 {

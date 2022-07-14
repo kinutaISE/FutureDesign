@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <h1>将来設計</h1>
   <p>
     <?php
-      echo $_SESSION['signup_success'] ;
+      echo empty($_SESSION['signup_success']) ? '' : $_SESSION['signup_success'] ;
       $_SESSION['signup_success'] = '' ;
     ?>
   </p>
