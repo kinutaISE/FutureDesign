@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $pdo = Database::getInstance() ;
   $user = find_user_id($pdo) ;
   $password = filter_input(INPUT_POST, 'password') ;
-  if ( ($user !== false) && ($user->password == $password) ) {
+  if ( ($user !== false) && ($user->get_password() == $password) ) {
     // 照合が取れた場合、マイページへ
-    $_SESSION['user_id'] = $user->id ;
+    $_SESSION['user_id'] = $user->get_id() ;
     header('Location: ' . SITE_URL . '/../mypage.php') ;
     exit ;
   }
