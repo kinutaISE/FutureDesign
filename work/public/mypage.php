@@ -271,7 +271,7 @@ $partner_applications = get_all_partner_applications($pdo) ;
   <!-- パートナー申請一覧 -->
   <div>
     <h3>パートナー申請一覧</h3>
-    <p><?= empty($partner_application) ? 'パートナーの申請登録はありません' : '' ;?></p>
+    <p><?= ( empty($partner_applications) ? 'パートナーの申請登録はありません' : '' ) ;?></p>
     <ul>
       <?php foreach ($partner_applications as $partner_application):?>
           <li><?= $partner_application['from_id'] ;?></li>
