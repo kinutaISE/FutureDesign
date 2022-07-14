@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     case 'lift_partner':
       lift_partner($pdo) ;
       break ;
+    case 'withdraw_application':
+      withdraw_my_partner_application($pdo) ;
+      break ;
     default:
       exit('Invalid post request!!') ;
   }
@@ -263,7 +266,11 @@ $partner_applications = get_all_partner_applications($pdo) ;
           <button>送信</button>
         </form>
       <?php else:?>
-        <p>申請中のユーザーID：<?= $my_application['to_id'] ;?></p>
+        <form method="post" action="?action=withdraw_application">
+          申請中のユーザーID：<?= $my_application['to_id'] ;?>
+          <input type="hidden" name="to_id" value="<?= $my_application['to_id'] ;?>">
+          <button>申請を取り下げる</button>
+        </form>
       <?php endif ;?>
     </div>
   <?php else:?>
