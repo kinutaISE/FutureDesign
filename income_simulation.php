@@ -1,6 +1,6 @@
 <?php
 
-require_once('../app/config.php') ;
+require_once('app/config.php') ;
 include('_parts/_header.php') ;
 
 $pdo = Database::getInstance() ;

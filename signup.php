@@ -1,6 +1,6 @@
 <?php
 
-require_once('../app/config.php') ;
+require_once('app/config.php') ;
 
 include_once('_parts/_header.php') ;
 
