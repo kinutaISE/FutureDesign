@@ -42,4 +42,3 @@ $earning_tax_info = set_file_info( EARNING_TAX_FILENAME ) ; // 所得税の情�
 define('RATIO_WALFARE_PENSION', 0.183) ; // 厚生年金の保険料率
 define('RATIO_EMPLOYEE', 0.009) ; // 雇用保険の保険料率
 define('RATIO_ACCIDENT', 0.03) ; // 労災保険の保険料率
-define('LAST_UPDATE', date()) ; // 最終更新日
