@@ -24,3 +24,47 @@ li {
   height: 700px ;
   align: center ;
 }
+.card{
+  width: 720px;
+  height: auto;
+  position: relative;
+  left: 370px ;
+  bottom: 320px ;
+}
+.card__basicframe{
+  width: 360px;
+  height: 320px;
+}
+.card__imgframe{
+  width: 100%;
+  height: auto;
+  padding-top: 56.25%;
+  background-size: cover;
+  box-sizing: border-box;
+}
+.card__textbox{
+  width: 100%;
+  height: auto;
+  padding: 20px 18px;
+  background: rgb(180, 199, 231) ;
+  box-sizing: border-box;
+}
+.card__textbox > * + *{
+  margin-top: 10px;
+  color: black ;
+}
+.card__titletext{
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 125%;
+  color: black ;
+}
+.card__overviewtext{
+  font-size: 12px;
+  line-height: 150%;
+}
+.card-skin{
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+}

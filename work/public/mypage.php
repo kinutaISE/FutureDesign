@@ -106,48 +106,108 @@ $partner_applications = get_all_partner_applications($pdo) ;
       ?>
     </div>
   <?php endif ;?>
-  <form method="post" action="?action=update_user_info">
-    <!-- 基本情報 -->
-    <h2>基本情報</h2>
-    生年月日：
-    <?php $now = new DateTime() ;?>
-    <input
-      type = "date"
-      name = "date_of_birth"
-      min = "<?= $now->modify('- 100 years')->format('Y-m-d') ;?>"
-      max = "<?= $now->modify('+ 95 years')->format('Y-m-d') ;?>"
-      value = "<?= empty($user->get_date_of_birth()) ? '' : $user->get_date_of_birth() ?>"
-    />
-    <br>
-    事業種：
-    <select name="business_type_id">
-      <?php foreach ($business_types_info as $business_type_info):?>
-        <option value="<?= $business_type_info['事業種ID'] ;?>" <?= ($user->get_business_type_id() === $business_type_info['事業種ID']) ? 'selected' : '' ; ?> >
-          <?= $business_type_info['事業種名'] ;?>
-        </option>
-      <?php endforeach ;?>
-    </select>
-    <br>
-    勤務地（都道府県）：
-    <select name="prefecture_id">
-      <?php foreach ($prefectures_info as $prefecture_info):?>
-        <option value="<?= $prefecture_info['都道府県ID'] ;?>" <?= ($user->get_prefecture_id() === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
-          <?= $prefecture_info['都道府県名'] ;?>
-        </option>
-      <?php endforeach ;?>
-    </select>
-    <br>
-    扶養人数：
-    <select name="dependents_num">
-      <?php for ($i = 0 ; $i <= 10 ; $i++) :?>
-        <option value="<?= $i ;?>" <?= ($user->get_dependents_num() === $i) ? 'selected' : '' ?>>
-          <?= $i ;?>人
-        </option>
-      <?php endfor ;?>
-    </select>
-    <button>保存</button>
-  </form>
-
+  <!-- 基本情報 -->
+  <div class="card__basicframe card-skin">
+    <div style="text-align: center ; background-color: #fff">
+      <img src="img/icon_ex.png">
+    </div>
+    <div class="card__textbox">
+      <div class="card__titletext">
+        基本情報
+      </div>
+      <div class="card__overviewtext">
+        <form method="post" action="?action=update_user_info">
+          生年月日：
+          <?php $now = new DateTime() ;?>
+          <input
+            type = "date"
+            name = "date_of_birth"
+            min = "<?= $now->modify('- 100 years')->format('Y-m-d') ;?>"
+            max = "<?= $now->modify('+ 95 years')->format('Y-m-d') ;?>"
+            value = "<?= empty($user->get_date_of_birth()) ? '' : $user->get_date_of_birth() ?>"
+          />
+          <br>
+          事業種：
+          <select name="business_type_id">
+            <?php foreach ($business_types_info as $business_type_info):?>
+              <option value="<?= $business_type_info['事業種ID'] ;?>" <?= ($user->get_business_type_id() === $business_type_info['事業種ID']) ? 'selected' : '' ; ?> >
+                <?= $business_type_info['事業種名'] ;?>
+              </option>
+            <?php endforeach ;?>
+          </select>
+          <br>
+          勤務地（都道府県）：
+          <select name="prefecture_id">
+            <?php foreach ($prefectures_info as $prefecture_info):?>
+              <option value="<?= $prefecture_info['都道府県ID'] ;?>" <?= ($user->get_prefecture_id() === $prefecture_info['都道府県ID']) ? 'selected' : '' ; ?> >
+                <?= $prefecture_info['都道府県名'] ;?>
+              </option>
+            <?php endforeach ;?>
+          </select>
+          <br>
+          扶養人数：
+          <select name="dependents_num">
+            <?php for ($i = 0 ; $i <= 10 ; $i++) :?>
+              <option value="<?= $i ;?>" <?= ($user->get_dependents_num() === $i) ? 'selected' : '' ?>>
+                <?= $i ;?>人
+              </option>
+            <?php endfor ;?>
+          </select>
+          <button>保存</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="card card-skin">
+    <div class="card__textbox">
+      <div class="card__titletext">
+        給与に関する情報
+      </div>
+      <div class="card__overviewtext">
+        <!-- 収入 -->
+        <div>
+          <!-- 給与の入力フォーム -->
+          <form method="post" action="?action=add_earning_item">
+            <!-- 給与項目名 -->
+            <input type="text" name="earning_item_name" placeholder="給与項目名を記入してください">
+            <!-- 給与額 -->
+            <input type="number" name="earning_item_amount" placeholder="給与額を記入してください">
+            <!-- 課税 or 非課税 -->
+            <label>
+              <input type="radio" name="earning_item_is_taxation" value="1">課税
+            </label>
+            <label>
+              <input type="radio" name="earning_item_is_taxation" value="0">非課税
+            </label>
+            <!-- 頻度（日、週、月、年） -->
+            <div class="frequency_form">
+              <input type="number" name="frequency_number"> <!-- 頻度の数値 -->
+              <select name="frequency_unit"> <!-- 頻度の単位 -->
+                <option value="days">日</option>
+                <option value="weeks">週間</option>
+                <option value="months">ヶ月</option>
+                <option value="years">年</option>
+              </select>
+              に一度発生
+            </div>
+            <button>追加</button>
+          </form>
+          <!-- 給与の一覧 -->
+          <ul>
+          <?php foreach ($earning_items as $earning_item) :?>
+            <li>
+              <?= $earning_item->get_info() ; ?>
+              <form method="post" action="?action=delete_earning_item">
+                <input type="hidden" name="earning_item_id" value="<?= $earning_item->get_id() ;?>">
+                <button>削除</button>
+              </form>
+            </li>
+          <?php endforeach ; ?>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- 収入 -->
   <div>
     <h2>収入に関する情報</h2>
