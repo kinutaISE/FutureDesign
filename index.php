@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 <body>
-  <h1>将来設計</h1>
+  <h1>将来設計（）</h1>
   <p>
     <?php
       echo empty($_SESSION['signup_success']) ? '' : $_SESSION['signup_success'] ;
