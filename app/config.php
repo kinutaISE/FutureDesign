@@ -2,8 +2,8 @@
 
 session_start() ;
 
-define('DNS', 'mysql:host=bf0d085a774c6d;dbname=heroku_c4ded9396eaa1f3;charset=utf8mb4') ;
-define('DB_USER', 'us-cdbr-east-06.cleardb.net') ;
+define('DNS', 'mysql:host=us-cdbr-east-06.cleardb.net;dbname=heroku_c4ded9396eaa1f3;charset=utf8mb4') ;
+define('DB_USER', 'bf0d085a774c6d') ;
 define('DB_PASS', '33ccb7df') ;
 define('SITE_URL', 'http://' . $_SERVER['HTTP_HOST']) ;
 define('PREFECTURES_FILENAME', __DIR__ . '/data/prefectures.csv') ;
