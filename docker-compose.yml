@@ -19,7 +19,7 @@ services:
     ports:
     - 8563:8000
     volumes:
-    - ./work:/work
+    - .:/work
 
 volumes:
   db-data:
