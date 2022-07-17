@@ -158,7 +158,9 @@ $partner_applications = get_all_partner_applications($pdo) ;
       </div>
     </div>
   </div>
-  <div class="card card-skin">
+
+  <!-- 給与に関する情報 -->
+  <div class="card__earning card-skin">
     <div class="card__textbox">
       <div class="card__titletext">
         給与に関する情報
@@ -167,12 +169,19 @@ $partner_applications = get_all_partner_applications($pdo) ;
         <!-- 収入 -->
         <div>
           <!-- 給与の入力フォーム -->
+          <h2>給与入力フォーム</h2>
           <form method="post" action="?action=add_earning_item">
             <!-- 給与項目名 -->
-            <input type="text" name="earning_item_name" placeholder="給与項目名を記入してください">
+            項目名：
+            <input type="text" name="earning_item_name">
+            <br>
             <!-- 給与額 -->
-            <input type="number" name="earning_item_amount" placeholder="給与額を記入してください">
+            金額　：
+            <input type="number" name="earning_item_amount" placeholder="半角数字">
+            円
+            <br>
             <!-- 課税 or 非課税 -->
+            課税 or 非課税：
             <label>
               <input type="radio" name="earning_item_is_taxation" value="1">課税
             </label>
@@ -181,6 +190,7 @@ $partner_applications = get_all_partner_applications($pdo) ;
             </label>
             <!-- 頻度（日、週、月、年） -->
             <div class="frequency_form">
+              頻度　：
               <input type="number" name="frequency_number"> <!-- 頻度の数値 -->
               <select name="frequency_unit"> <!-- 頻度の単位 -->
                 <option value="days">日</option>
@@ -193,21 +203,117 @@ $partner_applications = get_all_partner_applications($pdo) ;
             <button>追加</button>
           </form>
           <!-- 給与の一覧 -->
-          <ul>
-          <?php foreach ($earning_items as $earning_item) :?>
-            <li>
-              <?= $earning_item->get_info() ; ?>
-              <form method="post" action="?action=delete_earning_item">
-                <input type="hidden" name="earning_item_id" value="<?= $earning_item->get_id() ;?>">
-                <button>削除</button>
-              </form>
-            </li>
-          <?php endforeach ; ?>
-          </ul>
+          <h2>給与一覧</h2>
+          <table>
+            <tr>
+              <th>項目名</th>
+              <th>金額（円）</th>
+              <th>課税 or 非課税</th>
+              <th>頻度</th>
+              <th>削除</th>
+            </tr>
+            <?php foreach ($earning_items as $earning_item):?>
+              <tr>
+                <td><?= $earning_item->get_name() ;?></td>
+                <td><?= number_format($earning_item->get_amount()) ;?></td>
+                <td><?= $earning_item->get_taxation_type() ;?></td>
+                <td><?= $earning_item->get_frequency() ;?></td>
+                <td>
+                  <form method="post" action="?action=delete_earning_item" style="display: inline">
+                    <input type="hidden" name="earning_item_id" value="<?= $earning_item->get_id() ;?>">
+                    <button>削除</button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach ;?>
+          </table>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- 支出に関する情報 -->
+  <div class="card card-skin">
+  <div class="card__textbox">
+    <div class="card__titletext">
+      支出に関する情報
+    </div>
+    <div class="card__overviewtext">
+      <!-- 収入 -->
+      <div>
+        <!-- 給与の入力フォーム -->
+        <h2>支出入力フォーム</h2>
+        <form method="post" action="?action=add_cost_item">  
+          <input type="text" name="cost_item_name" placeholder="支出の項目名を記入してください">
+          <input type="text" name="cost_item_value" placeholder="支出額を記入してください">
+          <!-- 発生する期間 -->
+          <div>
+            <!-- 常に必要となる支出かどうか -->
+            <input type="checkbox" name="is_constant" value="constant">常にかかる支出
+            <br>
+          </div>
+          <div>
+            <!-- 期間の開始 -->
+            <?php $now = new DateTime() ;?>
+            <input
+              type="date"
+              name="term_start"
+              min="<?= $now->format('Y-m-d') ;?>"
+              max="<?= $now->modify('+ 100 years')->format('Y-m-d') ;?>"
+            />
+            〜
+            <!-- 期間の終了 -->
+            <?php $now = new DateTime() ;?>
+            <input
+              type="date"
+              name="term_finish"
+              min="<?= $now->format('Y-m-d') ;?>"
+              max="<?= $now->modify('+ 100 years')->format('Y-m-d') ;?>"
+            />
+          </div>
+          <!-- 頻度（日、週、月、年） -->
+          <div class="frequency_form">
+            <input type="number" name="frequency_number"> <!-- 頻度の数値 -->
+            <select name="frequency_unit"> <!-- 頻度の単位 -->
+              <option value="days">日</option>
+              <option value="weeks">週間</option>
+              <option value="months">ヶ月</option>
+              <option value="years">年</option>
+            </select>
+            に一度発生
+          </div>
+          <button>追加</button>
+        </form>
+        <!-- 支出の一覧 -->
+        <h2>支出一覧</h2>
+        <table>
+          <tr>
+            <th>項目名</th>
+            <th>金額（円）</th>
+            <th>期間</th>
+            <th>頻度</th>
+            <th>削除</th>
+          </tr>
+          <?php foreach ($cost_items as $cost_item):?>
+            <tr>
+              <td><?= $cost_item->name ;?></td>
+              <td><?= number_format($cost_item->value) ;?></td>
+              <td><?= $cost_item->term ;?></td>
+              <td><?= $cost_item->frequency ;?></td>
+              <td>
+                <form method="post" action="?action=delete_cost_item" style="display: inline">
+                  <input type="hidden" name="cost_item_id" value="<?= $cost_item->id ;?>">
+                  <button>削除</button>
+                </form>
+              </td>
+            </tr>
+          <?php endforeach ;?>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- 収入 -->
   <div>
     <h2>収入に関する情報</h2>
