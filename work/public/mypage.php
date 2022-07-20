@@ -70,10 +70,9 @@ $partner_applications = get_all_partner_applications($pdo) ;
 
 <body>
 
-  <h1>将来設計</h1>
-
-  <p><?= $user_id ;?> さんのマイページ</p>
-  <p><a href="index.php">ログアウト</a></p>
+  <h1 id="mypage_title">Future Design</h1>
+  <p id = "greeting">こんにちは <?= $user->get_id() ;?> さん</p>
+  <a href="index.php" class="btn btn-gradient"><span>ログアウト</span></a>
 
   <!-- パートナー登録申請送信の結果 -->
   <?php
