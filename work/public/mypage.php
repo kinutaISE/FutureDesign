@@ -116,6 +116,14 @@ $partner_applications = get_all_partner_applications($pdo) ;
         基本情報
       </div>
       <div class="card__overviewtext">
+        <p>生年月日：
+          <?=
+            empty( $user->get_date_of_birth() ) ? '未登録' : $user->get_date_of_birth() ;
+          ?>
+        </p>
+        <p>事業種：
+          <?= $business_types_info[$user->get_business_type_id()]['事業種名'] ;?>
+        </p>
         <form method="post" action="?action=update_user_info">
           生年月日：
           <?php $now = new DateTime() ;?>
